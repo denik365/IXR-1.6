@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<string_table>
+    <string id="renderer_r4">
+		<text>Ул. полное освещение (DX11)</text>
+    </string>
+	<string id="ui_mm_r4_enable_tessellation">
+		<text>Тесселяция</text>
+	</string>
+	<string id="ui_mm_ssao_text">
+		<text>Режим SSAO</text>
+	</string>
+	<string id="st_opt_extreme">
+		<text>макс. высоко</text>
+	</string>
+	<string id="ui_mm_confirm_changes">
+		<text>Применить сделанные изменения? Все изменения будут отменены через</text>
+	</string>
+	<string id="ui_mm_r1_detail_textures">
+		<text>Детальные текстуры</text>
+	</string>
+	<string id="ui_st_trade_hint">
+		<text>Открыть окно торговли ($$ACTION_SPRINT_TOGGLE$$)</text>
+	</string>
+	<string id="ui_st_upgrade_hint">
+		<text>Открыть окно ремонта и модификации ($$ACTION_SPRINT_TOGGLE$$)</text>
+	</string>
+	<string id="st_press_any_key">
+		<text>Нажмите любую клавишу для перехода к игре</text>
+	</string>
+	<string id="ui_mm_crouch_toggle">
+		<text>Режим сесть/встать</text>
+	</string>
+	<string id="ui_st_disable_hud">
+		<text>Показывать интерфейс</text>
+	</string>
+	<string id="ui_ammo_count">
+		<text>Ёмк. магазина</text>
+	</string>
+	<string id="ui_ammo_types">
+		<text>Боеприпасы</text>
+	</string>
+	<string id="st_kg">
+		<text>кг</text>
+	</string>
+	<string id="ui_mm_snd_device">
+		<text>Звуковое устройство</text>
+	</string>
+	<string id="ui_mm_r2_detail_bump">
+		<text>Детальный рельеф</text>
+	</string>
+	<string id="ui_mm_r2_steep_parallax">
+		<text>Steep parallax</text>
+	</string>
+	<string id="st_opt_high">
+		<text>высоко</text>
+	</string>
+	<string id="st_opt_low">
+		<text>низко</text>
+	</string>
+	<string id="st_opt_medium">
+		<text>средне</text>
+	</string>
+	<string id="st_opt_off">
+		<text>отключено</text>
+	</string>
+	<string id="st_opt_ultra">
+		<text>очень высоко</text>
+	</string>
+	<string id="st_key_notbinded">
+		<text>...</text>
+	</string>
+	<string id="ui_mm_volumetric_light">
+		<text>Объёмный свет</text>
+	</string>
+	<string id="ui_mm_r2_sun_quality">
+		<text>Качество солнца</text>
+	</string>
+	<string id="ui_mm_sun_shafts">
+		<text>Солнечные лучи</text>
+	</string>
+	<string id="ui_mm_ssao">
+		<text>по умолчанию</text>
+	</string>
+	<string id="ui_mm_r3_dynamic_wet_surfaces">
+		<text>Намокание плоскостей</text>
+	</string>
+	<string id="ui_mm_r3_volumetric_smoke">
+		<text>Объёмный дым</text>
+	</string>
+	<string id="ui_mm_dof">
+		<text>Глубина резкости</text>
+	</string>
+	<string id="ui_mm_soft_particles">
+		<text>Мягкие частицы</text>
+	</string>
+	<string id="ui_mm_soft_water">
+		<text>Мягкая вода</text>
+	</string>
+	<string id="month_april">
+		<text>Апрель</text>
+	</string>
+	<string id="month_august">
+		<text>Август</text>
+	</string>
+	<string id="month_december">
+		<text>Декабрь</text>
+	</string>
+	<string id="month_february">
+		<text>Февраль</text>
+	</string>
+	<string id="month_january">
+		<text>Январь</text>
+	</string>
+	<string id="month_july">
+		<text>Июль</text>
+	</string>
+	<string id="month_june">
+		<text>Июнь</text>
+	</string>
+	<string id="month_march">
+		<text>Март</text>
+	</string>
+	<string id="month_may">
+		<text>Май</text>
+	</string>
+	<string id="month_november">
+		<text>Ноябрь</text>
+	</string>
+	<string id="month_october">
+		<text>Октябрь</text>
+	</string>
+	<string id="month_september">
+		<text>Сентябрь</text>
+	</string>
+	<string id="ui_st_inv_repair">
+		<text>Ремонт</text>
+	</string>
+	<string id="ui_repair_button_hint">
+		<text>Починить выбранную вещь</text>
+	</string>
+	<string id="st_prop_bullet_speed">
+		<text>Настильность</text>
+	</string>
+	<string id="st_prop_calibre">
+		<text>Калибр</text>
+	</string>
+	<string id="st_prop_recoil">
+		<text>Отдача</text>
+	</string>
+	<string id="st_prop_reliability">
+		<text>Надёжность</text>
+	</string>
+	<string id="st_prop_scope_1.6x">
+		<text>Коллиматорный прицел 1,6x</text>
+	</string>
+	<string id="st_prop_scope_4x">
+		<text>Оптический прицел 4x</text>
+	</string>
+	<string id="st_prop_silencer">
+		<text>Крепление глушителя</text>
+	</string>
+	<string id="st_prop_underbarrel_slot">
+		<text>Крепление подствольника</text>
+	</string>
+	<string id="st_prop_weight">
+		<text>Масса</text>
+	</string>
+	<string id="st_upgr_cost">
+		<text>Стоимость</text>
+	</string>
+	<string id="st_upgr_disable">
+		<text>Невозможно установить</text>
+	</string>
+	<string id="st_upgr_installed">
+		<text>Установлен</text>
+	</string>
+	<string id="st_upgrade_install">
+		<text>Вы действительно хотите установить:</text>
+	</string>
+	<string id="st_prop_autolock">
+		<text>Система автозахвата целей</text>
+	</string>
+	<string id="st_prop_autolockscope">
+		<text>Система автозахвата целей</text>
+	</string>
+	<string id="st_prop_scope_5x">
+		<text>Оптический прицел 5x</text>
+	</string>
+	<string id="st_prop_scope_6x">
+		<text>Оптический прицел 6x</text>
+	</string>
+	<string id="st_prop_scanner">
+		<text>Инфракрасный сканер</text>
+	</string>
+	<string id="st_prop_weightoutfit">
+		<text>Вес бронежилета</text>
+	</string>
+	<string id="st_prop_night_vision_2">
+		<text>ПНВ 2-го поколения</text>
+	</string>
+	<string id="st_prop_night_vision_3">
+		<text>ПНВ 3-го поколения</text>
+	</string>
+	<string id="st_prop_scope_attach">
+		<text>Крепление оптики</text>
+	</string>
+	<string id="st_int_silencer">
+		<text>Интегрированный глушитель</text>
+	</string>
+	<string id="st_prop_grenade_launcher">
+		<text>Подствольный гранатомёт</text>
+	</string>
+	<string id="st_prop_restore_bleeding">
+		<text>Заживление ран</text>
+	</string>
+	<string id="st_prop_restore_health">
+		<text>Восстановление здоровья</text>
+	</string>
+	<string id="st_prop_night_vision">
+		<text>ПНВ 1-го поколения</text>
+	</string>
+	<string id="st_prop_scope">
+		<text>Регулируемый прицел</text>
+	</string>
+	<string id="st_prop_contrast">
+		<text>Высококонтрастный прицел</text>
+	</string>
+	<string id="st_prop_sprint">
+		<text>Усилители сервоприводов </text>
+	</string>
+	<string id="st_prop_durability">
+		<text>Прочность костюма</text>
+	</string>
+	<string id="st_upgr_cant_do">
+		<text>техник не делает такую модификацию</text>
+	</string>
+	<string id="st_upgr_group">
+		<text>эта часть уже модифицирована</text>
+	</string>
+	<string id="st_upgr_enough_money">
+		<text>недостаточно денег</text>
+	</string>
+	<string id="st_no_buck">
+		<text>Не стреляет дробью</text>
+	</string>
+	<string id="st_auto_fire">
+		<text>Режим авт. огня</text>
+	</string>
+	<string id="st_semi_auto_fire">
+		<text>Режим по 3 выстрела</text>
+	</string>
+	<string id="st_prop_artefact">
+		<text>Кол-во контейнеров</text>
+	</string>
+	<string id="st_upgr_vodka">
+		<text>технику нужно выпить водки</text>
+	</string>
+	<string id="st_upgr_toolkit_1">
+		<text>технику нужны инструменты для грубой работы</text>
+	</string>
+	<string id="st_upgr_toolkit_2">
+		<text>технику нужны инструменты для тонкой работы</text>
+	</string>
+	<string id="st_upgr_toolkit_3">
+		<text>технику нужны инструменты для калибровки</text>
+	</string>
+	<string id="st_upgr_condlist">
+		<text>технику нужны дополнительные данные</text>
+	</string>
+	<string id="st_upgr_parents">
+		<text>нужны предшествующие модификации</text>
+	</string>
+	<string id="ui_inv_repair">
+		<text>Починить</text>
+	</string>
+	<string id="ui_st_upgrade">
+		<text>Улучшить</text>
+	</string>
+	<string id="ui_inv_effect_time">
+		<text>Время действия</text>
+	</string>
+	<string id="ui_inv_seconds_short">
+		<text>сек.</text>
+	</string>
+</string_table>

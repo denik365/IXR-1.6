@@ -1,0 +1,210 @@
+local ini = system_ini()
+local exists_sections_cache = {}
+
+-- safe
+function has_section(section)
+	if exists_sections_cache[section] ~= nil then
+		return exists_sections_cache[section]
+	end
+	
+	exists_sections_cache[section] = ini and section and section ~= "" and ini:section_exist(section)
+	
+	return exists_sections_cache[section]
+end
+
+-- unsafe
+function has_line(section, parameter)
+	return ini and section and section ~= "" and parameter and parameter ~= "" and ini:line_exist(section, parameter)
+end
+
+-- safe
+function has_line_in_section(section, parameter)
+	return has_section(section) and has_line(section, parameter)
+end
+
+-- safe
+function cfg_get_bool(section, parameter, def_value)
+	if has_line_in_section(section, parameter) then
+		local line_value = ini:r_bool(section, parameter) or nil
+		
+		if line_value ~= nil then
+			return line_value
+		end
+	end
+	
+	return def_value
+end
+
+-- safe
+function cfg_get_string(section, parameter, def_value)
+	if has_line_in_section(section, parameter) then
+		local line_value = ini:r_string(section, parameter) or nil
+		
+		if line_value ~= nil then
+			return line_value
+		end
+	end
+	
+	return def_value
+end
+
+-- safe
+function cfg_get_float(section, parameter, def_value)
+	if has_line_in_section(section, parameter) then
+		local line_value = ini:r_float(section, parameter) or nil
+		
+		if line_value ~= nil then
+			return line_value
+		end
+	end
+	
+	return def_value
+end
+
+function cfg_parse_separated_strings(section, parameter, def_value)
+	if not has_line_in_section(section, parameter) then
+		return def_value
+	end
+	
+	local string_with_separators = cfg_get_string(section, parameter, false)
+	if not string_with_separators then
+		return def_value
+	end
+		
+	return ffx_string_utils.parse_separated_strings(string_with_separators, def_value)
+end
+
+function cfg_parse_separated_numbers(section, parameter, def_value)
+	if not has_line_in_section(section, parameter) then
+		return def_value
+	end
+	
+	local string_with_separators = cfg_get_string(section, parameter, false)
+	if not string_with_separators then
+		return def_value
+	end
+		
+    return ffx_string_utils.parse_separated_numbers(string_with_separators, def_value)
+end
+
+function cfg_parse_separated_bools(section, parameter, def_value)
+	if not has_line_in_section(section, parameter) then
+		return def_value
+	end
+	
+	local string_with_values = cfg_get_string(section, parameter, false)
+	if not string_with_values then
+		return def_value
+	end
+    
+    return ffx_string_utils.parse_separated_bools(string_with_values, def_value)
+end
+
+-- safe
+function translate(str)
+	return game.translate_string(tostring(str)) or tostring(str)
+end
+
+-- safe
+function get_translated_section_name(real_sect)
+	if has_line_in_section(real_sect, "inv_name") then
+		return game.translate_string(cfg_get_string(real_sect, "inv_name", real_sect)) or real_sect
+	else
+		return real_sect
+	end
+end
+
+
+function parse_section_to_array(ini, section)
+	local tmp = {}
+	local result = nil
+	local id = nil
+	local value = nil
+	
+	if not ini or not ini:section_exist(section) then
+		return tmp
+	end
+
+	for i=0, ini:line_count(section)-1 do
+		result, id, value = ini:r_line(section, i, "", "")
+		if id ~= "" and id ~= nil then
+			id = ffx_string_utils.trim(id)
+			if id ~= "" and id ~= nil then
+				tmp[id] = ffx_string_utils.trim(value)
+			end
+		end
+	end
+	
+	return tmp
+end
+
+
+
+-- ##########################################################
+--		optional ini methods
+-- ##########################################################
+
+function ini_section_exists(_ini, section)
+	if not _ini or not section then
+		return false
+	end
+	
+	return _ini:section_exist(section)
+end
+
+function ini_line_exists(_ini, section, parameter)
+	if not _ini or not section or not parameter then
+		return false
+	end
+	
+	return _ini:line_exist(section, parameter)
+end
+
+function ini_has_line_in_section(_ini, section, parameter)
+	if not ini_section_exists(_ini, section) then
+		return false
+	end
+	
+	if not ini_line_exists(_ini, section, parameter) then
+		return false
+	end
+	
+	return true
+end
+
+function ini_get_string(_ini, section, parameter, def_value)
+	if ini_section_exists(_ini, section) and ini_line_exists(_ini, section, parameter) then
+		local line_value = _ini:r_string(section, parameter) or nil
+		
+		if line_value ~= nil then
+			return line_value
+		end
+	end
+	
+	return def_value
+end
+
+function ini_parse_separated(_ini, section, parameter, def_value)
+	if not ini_has_line_in_section(_ini, section, parameter) then
+		return def_value
+	end
+	
+	local string_with_separators = ini_get_string(_ini, section, parameter, false)
+	if not string_with_separators then
+		return def_value
+	end
+		
+	local parts = ffx_string_utils.explode(string_with_separators, ",")
+	local result = {}
+	for i, string_part in ipairs(parts) do
+		if string_part then
+			table.insert(result, ffx_string_utils.trim(string_part))
+		end
+	end
+	
+	if #result == 0 then
+		return def_value
+	end
+
+	return result
+end

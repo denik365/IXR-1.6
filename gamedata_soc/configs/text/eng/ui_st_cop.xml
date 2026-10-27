@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<string_table>
+    <string id="renderer_r4">
+		<text>Enhanced full dyn. lighting (DX11)</text>
+    </string>
+	<string id="ui_mm_r4_enable_tessellation">
+		<text>Tessellation</text>
+	</string>
+	<string id="ui_mm_ssao_text">
+		<text>SSAO mode</text>
+	</string>
+	<string id="st_opt_extreme">
+		<text>max high</text>
+	</string>
+	<string id="ui_mm_confirm_changes">
+		<text>Apply changes? All changes will be reverted in</text>
+	</string>
+	<string id="ui_mm_r1_detail_textures">
+		<text>Detailed textures</text>
+	</string>
+	<string id="ui_st_trade_hint">
+		<text>Open trading window ($$ACTION_SPRINT_TOGGLE$$)</text>
+	</string>
+	<string id="ui_st_upgrade_hint">
+		<text>Open repair and modification window ($$ACTION_SPRINT_TOGGLE$$)</text>
+	</string>
+	<string id="st_press_any_key">
+		<text>Press any key to play</text>
+	</string>
+	<string id="ui_mm_crouch_toggle">
+		<text>Crouch/stand mode</text>
+	</string>
+	<string id="ui_st_disable_hud">
+		<text>Show interface</text>
+	</string>
+	<string id="ui_ammo_count">
+		<text>Mag. size</text>
+	</string>
+	<string id="ui_ammo_types">
+		<text>Ammo</text>
+	</string>
+	<string id="st_kg">
+		<text>kg</text>
+	</string>
+	<string id="ui_mm_snd_device">
+		<text>Sound device</text>
+	</string>
+	<string id="ui_mm_r2_detail_bump">
+		<text>Detail bump</text>
+	</string>
+	<string id="ui_mm_r2_steep_parallax">
+		<text>Steep parallax</text>
+	</string>
+	<string id="st_opt_high">
+		<text>high</text>
+	</string>
+	<string id="st_opt_low">
+		<text>low</text>
+	</string>
+	<string id="st_opt_medium">
+		<text>medium</text>
+	</string>
+	<string id="st_opt_off">
+		<text>off</text>
+	</string>
+	<string id="st_opt_ultra">
+		<text>very high</text>
+	</string>
+	<string id="st_key_notbinded">
+		<text>...</text>
+	</string>
+	<string id="ui_mm_volumetric_light">
+		<text>Volumetric light</text>
+	</string>
+	<string id="ui_mm_r2_sun_quality">
+		<text>Sun quality</text>
+	</string>
+	<string id="ui_mm_sun_shafts">
+		<text>Sun rays</text>
+	</string>
+	<string id="ui_mm_ssao">
+		<text>default</text>
+	</string>
+	<string id="ui_mm_r3_dynamic_wet_surfaces">
+		<text>Wet surfaces</text>
+	</string>
+	<string id="ui_mm_r3_volumetric_smoke">
+		<text>Volumetric smoke</text>
+	</string>
+	<string id="ui_mm_dof">
+		<text>Depth of field</text>
+	</string>
+	<string id="ui_mm_soft_particles">
+		<text>Soft particles</text>
+	</string>
+	<string id="ui_mm_soft_water">
+		<text>Soft water</text>
+	</string>
+	<string id="month_april">
+		<text>April</text>
+	</string>
+	<string id="month_august">
+		<text>August</text>
+	</string>
+	<string id="month_december">
+		<text>December</text>
+	</string>
+	<string id="month_february">
+		<text>February</text>
+	</string>
+	<string id="month_january">
+		<text>January</text>
+	</string>
+	<string id="month_july">
+		<text>July</text>
+	</string>
+	<string id="month_june">
+		<text>June</text>
+	</string>
+	<string id="month_march">
+		<text>March</text>
+	</string>
+	<string id="month_may">
+		<text>May</text>
+	</string>
+	<string id="month_november">
+		<text>November</text>
+	</string>
+	<string id="month_october">
+		<text>October</text>
+	</string>
+	<string id="month_september">
+		<text>September</text>
+	</string>
+	<string id="ui_st_inv_repair">
+		<text>Repair</text>
+	</string>
+	<string id="ui_repair_button_hint">
+		<text>Repair selected item</text>
+	</string>
+	<string id="st_prop_bullet_speed">
+		<text>Flatness</text>
+	</string>
+	<string id="st_prop_calibre">
+		<text>Caliber</text>
+	</string>
+	<string id="st_prop_recoil">
+		<text>Recoil</text>
+	</string>
+	<string id="st_prop_reliability">
+		<text>Reliability</text>
+	</string>
+	<string id="st_prop_scope_1.6x">
+		<text>1.6x reflex sight</text>
+	</string>
+	<string id="st_prop_scope_4x">
+		<text>4x optical scope</text>
+	</string>
+	<string id="st_prop_silencer">
+		<text>Silencer</text>
+	</string>
+	<string id="st_prop_underbarrel_slot">
+		<text>underbarrel mount</text>
+	</string>
+	<string id="st_prop_weight">
+		<text>Weight</text>
+	</string>
+	<string id="st_upgr_cost">
+		<text>Cost</text>
+	</string>
+	<string id="st_upgr_disable">
+		<text>Cannot be installed</text>
+	</string>
+	<string id="st_upgr_installed">
+		<text>Installed</text>
+	</string>
+	<string id="st_upgrade_install">
+		<text>Are you sure you want to install:</text>
+	</string>
+	<string id="st_prop_autolock">
+		<text>Automatic target acquisition system</text>
+	</string>
+	<string id="st_prop_autolockscope">
+		<text>Automatic target acquisition system</text>
+	</string>
+	<string id="st_prop_scope_5x">
+		<text>x5 optical scope</text>
+	</string>
+	<string id="st_prop_scope_6x">
+		<text>x6 optical scope</text>
+	</string>
+	<string id="st_prop_scanner">
+		<text>Infrared scanner</text>
+	</string>
+	<string id="st_prop_weightoutfit">
+		<text>Body armor weight</text>
+	</string>
+	<string id="st_prop_night_vision_2">
+		<text>Second generation night vision device</text>
+	</string>
+	<string id="st_prop_night_vision_3">
+		<text>Third generation night vision device</text>
+	</string>
+	<string id="st_prop_scope_attach">
+		<text>Optical scope mount</text>
+	</string>
+	<string id="st_int_silencer">
+		<text>Integrated silencer</text>
+	</string>
+	<string id="st_prop_grenade_launcher">
+		<text>Underbarrel grenade launcher</text>
+	</string>
+	<string id="st_prop_restore_bleeding">
+		<text>Wound healing</text>
+	</string>
+	<string id="st_prop_restore_health">
+		<text>Health restoration</text>
+	</string>
+	<string id="st_prop_night_vision">
+		<text>First generation night vision device</text>
+	</string>
+	<string id="st_prop_scope">
+		<text>Adjustable sight</text>
+	</string>
+	<string id="st_prop_contrast">
+		<text>High contrast sight</text>
+	</string>
+	<string id="st_prop_sprint">
+		<text>Servomotor boosters </text>
+	</string>
+	<string id="st_prop_durability">
+		<text>Suit durability</text>
+	</string>
+	<string id="st_gauss_cannot_be_repaired">
+		<text>It’s not clear how the weapon works. It can’t be repaired without additional information about its design.</text>
+	</string>
+	<string id="st_upgr_cant_do">
+		<text>The technician cannot perform this modification</text>
+	</string>
+	<string id="st_upgr_group">
+		<text>This part has already been modified</text>
+	</string>
+	<string id="st_upgr_enough_money">
+		<text>Not enough money</text>
+	</string>
+	<string id="st_no_buck">
+		<text>Does not use shot</text>
+	</string>
+	<string id="st_auto_fire">
+		<text>Automatic fire mode</text>
+	</string>
+	<string id="st_semi_auto_fire">
+		<text>3-round burst mode</text>
+	</string>
+	<string id="st_prop_artefact">
+		<text>Number of containers</text>
+	</string>
+	<string id="st_upgr_vodka">
+		<text>the technician needs vodka</text>
+	</string>
+	<string id="st_upgr_toolkit_1">
+		<text>the technician needs tools for basic work</text>
+	</string>
+	<string id="st_upgr_toolkit_2">
+		<text>the technician needs tools for fine work</text>
+	</string>
+	<string id="st_upgr_toolkit_3">
+		<text>the technician needs tools for calibration</text>
+	</string>
+	<string id="st_upgr_condlist">
+		<text>the technician needs additional information</text>
+	</string>
+	<string id="st_upgr_parents">
+		<text>preceding modifications required</text>
+	</string>
+	<string id="ui_inv_repair">
+		<text>Repair</text>
+	</string>
+	<string id="ui_st_upgrade">
+		<text>Upgrade</text>
+	</string>
+	<string id="ui_inv_effect_time">
+		<text>Duration</text>
+	</string>
+	<string id="ui_inv_seconds_short">
+		<text>sec</text>
+	</string>
+</string_table>

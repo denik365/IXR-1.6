@@ -1,0 +1,58 @@
+#pragma once
+#include "../../xrUI/Widgets/UIWindow.h"
+#include "../EntityCondition.h"
+
+class CUIXml;
+class CUIStatic;
+class UIBoosterInfoItem;
+
+class CUIBoosterInfo final : public CUIWindow
+{
+public:
+					CUIBoosterInfo		();
+	virtual			~CUIBoosterInfo		();
+			void	InitFromXml				(CUIXml& xml);
+			void	SetInfo					(const shared_str& section);
+
+	virtual CUIWindow* ui_cast_window() { return this; }
+
+protected:
+	UIBoosterInfoItem*	m_booster_items[eBoostExplImmunity];
+	UIBoosterInfoItem*	m_booster_satiety;
+	UIBoosterInfoItem*	m_booster_thirst;
+	UIBoosterInfoItem*	m_booster_sleepiness;
+	UIBoosterInfoItem*	m_booster_intoxication;
+	UIBoosterInfoItem*	m_booster_anabiotic;
+	UIBoosterInfoItem*	m_booster_time;
+
+	CUIStatic*			m_Prop_line;
+
+}; // class CUIBoosterInfo
+
+// -----------------------------------
+
+class UIBoosterInfoItem final : public CUIWindow
+{
+public:
+				UIBoosterInfoItem	();
+	virtual		~UIBoosterInfoItem();
+		
+		void	Init				( CUIXml& xml, const char* section );
+		void	SetCaption			( const char* name );
+		void	SetValue			( float value );
+		void	SetValueText		( const char* text );
+		void	ShowValue			( bool show );
+	
+	virtual CUIWindow* ui_cast_window() { return this; }
+
+	float		m_magnitude;
+private:
+	CUIStatic*	m_caption;
+	CUIStatic*	m_value;
+	bool		m_show_sign;
+	bool		m_sign_inverse = false;
+	shared_str	m_unit_str;
+	shared_str	m_texture_minus;
+	shared_str	m_texture_plus;
+
+}; // class UIBoosterInfoItem

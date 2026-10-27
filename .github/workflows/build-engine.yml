@@ -1,0 +1,310 @@
+name: 'Build engine'
+
+on:
+  push:
+    branches:
+      - '**'
+    paths:
+      - '.github/workflows/**'
+      - 'cmake/**'
+      - 'gamedata*/**'
+      - 'sdk/**'
+      - 'src/**'
+      - '**/CMakeLists.txt'
+      - '**/*.ltx'
+      - '**/*.json'
+  pull_request:
+    branches:
+      - '**'
+    paths:
+      - '.github/workflows/**'
+      - 'cmake/**'
+      - 'gamedata*/**'
+      - 'sdk/**'
+      - 'src/**'
+      - '**/CMakeLists.txt'
+      - '**/*.ltx'
+      - '**/*.json'
+
+defaults:
+  run:
+    shell: pwsh
+
+jobs:
+  build-engine-linux:
+    name: 'Build engine (Linux)'
+
+    strategy:
+      matrix:
+        system:
+          - ubuntu-latest
+        preset:
+          - Engine
+        platform:
+          - x64
+        config:
+          - Debug
+          - RelWithDebInfo
+          - Release
+
+    defaults:
+      run:
+        shell: bash
+
+    runs-on: ${{ matrix.system }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Install LLVM/Clang
+        run: |
+          wget https://apt.llvm.org/llvm.sh
+          chmod +x llvm.sh
+          sudo ./llvm.sh 20
+
+          sudo apt-get update
+
+          sudo apt-get install -y \
+            clang-20 \
+            clang-tools-20 \
+            lldb-20 \
+            lld-20 \
+            libc++-20-dev \
+            libc++abi-20-dev
+
+      - name: Set Clang as default
+        run: |
+          sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-20 100
+          sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-20 100
+          sudo update-alternatives --install /usr/bin/cc cc /usr/bin/clang-20 100
+          sudo update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++-20 100
+
+      - name: Verify compiler
+        run: |
+          clang --version
+          clang++ --version
+
+      - name: Install Linux dependencies
+        run: |
+          sudo apt-get update
+
+          sudo apt-get install -y \
+            ninja-build \
+            cmake \
+            libx11-dev \
+            libxext-dev \
+            libxrandr-dev \
+            libxcursor-dev \
+            libxfixes-dev \
+            libxi-dev \
+            libxinerama-dev \
+            libxss-dev \
+            libwayland-dev \
+            libdrm-dev \
+            libgbm-dev \
+            libudev-dev \
+            libpipewire-0.3-dev \
+            libibus-1.0-dev \
+            libdbus-1-dev \
+            libtbb-dev \
+            liblzo2-2 \
+            liblzo2-dev \
+            libogg-dev \
+            meson \
+            glslang-tools \
+            libvulkan-dev \
+            spirv-headers \
+            ispc
+
+      - name: Configure engine
+        run: |
+          cmake \
+            -S . \
+            -B build/${{ matrix.platform }}/${{ matrix.preset }}-${{ runner.os }} \
+            -G "Ninja Multi-Config" \
+            -DCMAKE_C_COMPILER=clang \
+            -DCMAKE_CXX_COMPILER=clang++ \
+            -DIXRAY_ENABLE_RESONANCEAUDIO=OFF \
+            -DIXRAY_CI=ON \
+            -DIXRAY_PROFILER=OFF
+
+      - name: Build engine
+        run: |
+          cmake \
+            --build build/${{ matrix.platform }}/${{ matrix.preset }}-${{ runner.os }} \
+            --target xrEngine xrRender_R1 xrRender_R2 xrGame \
+            --config ${{ matrix.config }} \
+            -j$(nproc)
+
+  build-engine:
+    name: 'Build engine'
+
+    strategy:
+      matrix:
+        system:
+          - windows-2022
+        preset:
+          - Engine
+        platform:
+          - x64
+        config:
+          - RelWithDebInfo
+
+    runs-on: ${{ matrix.system }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Cache packages
+        uses: actions/cache@v6
+        with:
+          key: ${{ matrix.preset }}-NuGet-${{ hashFiles('**/Packages.config') }}
+          restore-keys: |
+            ${{ matrix.preset }}-NuGet-${{ hashFiles('**/Packages.config') }}
+            ${{ matrix.preset }}-NuGet-
+          path: |
+            ~/.nuget/packages
+
+      - name: Configure engine
+        run: |
+          cmake `
+            --preset ${{ matrix.preset }}-${{ matrix.platform }}-${{ runner.os }}
+
+      - name: Build engine
+        run: |
+          cmake `
+            --build `
+            --preset ${{ matrix.preset }}-${{ matrix.platform }}-${{ runner.os }}-${{ matrix.config }}
+
+      - name: Upload binaries
+        uses: actions/upload-artifact@v7
+        with:
+          name: engine-binaries-${{ matrix.system }}-${{ matrix.platform }}-${{ matrix.config }}-${{ github.sha }}
+          path: |
+            build/${{ matrix.platform }}/${{ matrix.preset }}-${{ runner.os }}/bin/${{ matrix.config }}/*.exe
+            build/${{ matrix.platform }}/${{ matrix.preset }}-${{ runner.os }}/bin/${{ matrix.config }}/*.dll
+
+      - name: Upload symbols
+        uses: actions/upload-artifact@v7
+        if: ${{ matrix.config != 'Release' }}
+        with:
+          name: engine-symbols-${{ matrix.system }}-${{ matrix.platform }}-${{ matrix.config }}-${{ github.sha }}
+          path: |
+            build/${{ matrix.platform }}/${{ matrix.preset }}-${{ runner.os }}/bin/${{ matrix.config }}/*.pdb
+
+      - name: Upload libraries
+        uses: actions/upload-artifact@v7
+        with:
+          name: engine-libraries-${{ matrix.system }}-${{ matrix.platform }}-${{ matrix.config }}-${{ github.sha }}
+          path: |
+            build/${{ matrix.platform }}/${{ matrix.preset }}-${{ runner.os }}/lib/${{ matrix.config }}/
+
+      - name: Upload packages
+        uses: actions/upload-artifact@v7
+        if: ${{ (matrix.config == 'Debug' && matrix.platform == 'x64') }}
+        with:
+          name: engine-packages-${{ matrix.system }}-${{ github.sha }}
+          path: |
+            build/${{ matrix.platform }}/${{ matrix.preset }}-${{ runner.os }}/packages/
+
+  pack-assets:
+    name: 'Pack assets (${{ matrix.variant }})'
+    needs: [build-engine]
+    strategy:
+      matrix:
+        system: [windows-2022]
+        variant: [cop, cs, soc, coc]
+    runs-on: ${{ matrix.system }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+  
+      - name: Setup compressor
+        uses: ixray-team/setup-compressor@v0.3
+        with:
+          codebase: '1.6-stcop'
+  
+      - name: Generate patches
+        run: |
+          ${{ github.workspace }}/util/generate-patch.bat xrCompress.exe
+          type *.log
+  
+      - name: Prepare assets for ${{ matrix.variant }}
+        shell: pwsh
+        run: |
+          # Удаляем старую gamedata если есть
+          if (Test-Path gamedata) { Remove-Item -Recurse -Force gamedata }
+          
+          # Копируем правильную папку патчей
+          $patchFolder = if ("${{ matrix.variant }}" -eq "cop") { "patch" } else { "patch_${{ matrix.variant }}" }
+          Copy-Item -Recurse -Force $patchFolder gamedata
+          
+          # Обрабатываем fsgame.ltx
+          if ("${{ matrix.variant }}" -eq "coc") {
+            if (Test-Path fsgame.ltx) { Remove-Item -Force fsgame.ltx }
+            Copy-Item fsgame_coc.ltx fsgame.ltx
+          } elseif ("${{ matrix.variant }}" -eq "soc") {
+            # Для SoC просто проверяем что fsgame.ltx существует
+            if (-not (Test-Path fsgame.ltx)) {
+              Write-Host "Warning: fsgame.ltx not found for SoC"
+            }
+          }
+          # Для cop и cs ничего не делаем с fsgame.ltx
+  
+      - name: Upload assets (${{ matrix.variant }})
+        uses: actions/upload-artifact@v7
+        with:
+          name: engine-assets-${{ matrix.variant }}-${{ github.sha }}
+          path: |
+            gamedata/
+            .xrignore
+            fsgame.ltx
+          include-hidden-files: true
+  publish-engine:
+    name: 'Publish engine ${{ matrix.variant }}'
+    needs: [pack-assets]
+    strategy:
+      matrix:
+        system: [windows-2022]
+        platform: [x64]
+        preset: [Engine]
+        config: [RelWithDebInfo]
+        variant: [cop, cs, soc, coc]
+    runs-on: ${{ matrix.system }}
+  
+    steps:
+      - name: Get engine binaries
+        uses: actions/download-artifact@v8
+        with:
+          name: engine-binaries-${{ matrix.system }}-${{ matrix.platform }}-${{ matrix.config }}-${{ github.sha }}
+          path: build/${{ matrix.platform }}/${{ matrix.preset }}-${{ runner.os }}/bin/${{ matrix.config }}/
+  
+      - name: Get assets (${{ matrix.variant }})
+        uses: actions/download-artifact@v8
+        with:
+          name: engine-assets-${{ matrix.variant }}-${{ github.sha }}
+          path: ./
+  
+      - name: Move binaries to ./bin
+        run: |
+          mkdir ${{ github.workspace }}/bin
+          move ${{ github.workspace }}/build/${{ matrix.platform }}/${{ matrix.preset }}-${{ runner.os }}/bin/${{ matrix.config }}/*.* ${{ github.workspace }}/bin
+  
+      - name: Upload publish artifact (${{ matrix.variant }})
+        uses: actions/upload-artifact@v7
+        with:
+          name: engine-publish-${{ matrix.variant }}-${{ matrix.system }}-${{ matrix.platform }}-${{ github.sha }}
+          path: |
+            bin/
+            gamedata/
+            .xrignore
+            fsgame.ltx
+          include-hidden-files: true

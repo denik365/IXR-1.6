@@ -1,0 +1,216 @@
+<w>
+    <background x="0" y="0" width="1024" height="768">
+        <auto_static x="102" y="0" width="819" height="768" stretch="1">
+            <texture>ui_inGame2_opt_background</texture>
+        </auto_static>
+      <auto_static x="253" y="250" width="269" height="176" stretch="1">
+        <texture x="1" y="1" width="335" height="174">ui\video_window</texture>
+      </auto_static>
+      <auto_static x="0" y="0" width="102" height="768" stretch="1">
+            <texture>ui_inGame2_opt_left_widepanel</texture>
+        </auto_static>
+        <auto_static x="921" y="0" width="104" height="768" stretch="1">
+            <texture>ui_inGame2_opt_right_widepanel</texture>
+        </auto_static>
+    </background>
+	<gamepad_legend x="0" y="724" width="1024" height="30" spacing="5">
+		<auto_static x="0" y="0" width="22" height="30">
+			<text font="graffiti19" vert_align="c">ui_pda_tabs</text>
+		</auto_static>
+		<auto_static x="0" y="0" width="22" height="30">
+			<text font="graffiti19" vert_align="c">st_options_toggle</text>
+		</auto_static>
+		<auto_static x="0" y="0" width="22" height="30">
+			<window_name>gp_additional_text</window_name>
+			<text font="graffiti19" vert_align="c">st_options_advanced</text>
+		</auto_static>
+		<auto_static x="0" y="0" width="22" height="30">
+			<text font="graffiti19" vert_align="c">ui_mm_back_gp</text>
+		</auto_static>
+	</gamepad_legend>
+    <main_dialog>
+        <scroll_v x="0" y="0" width="360" height="320"
+            right_ident="0" left_ident="0" top_indent="0" bottom_indent="0"
+            vert_interval="0" always_show_scroll="0" />
+
+        <dialog x="484" y="274" width="389" height="462" stretch="1">
+            <texture>ui_inGame2_opt_main_window</texture>
+            <auto_static x="11" y="27" width="368" height="38" stretch="1">
+                <texture>ui_inGame2_opt_buttons_frame</texture>
+            </auto_static>
+        </dialog>
+
+        <btn_accept x="84" y="431" width="108" height="26" stretch="1">
+            <text font="letterica18" align="c">ui_mm_apply</text>
+            <texture>ui_inGame2_Mp_bigbuttone</texture>
+            <text_color>
+                <e r="170" g="170" b="170"/>
+            </text_color>
+        </btn_accept>
+
+        <btn_cancel x="196" y="431" width="108" height="26" stretch="1">
+            <text font="letterica18" align="c">ui_mm_cancel</text>
+            <texture>ui_inGame2_Mp_bigbuttone</texture>
+            <text_color>
+                <e r="170" g="170" b="170"/>
+            </text_color>
+        </btn_cancel>
+
+        <tab x="11" y="27" width="368" height="38">
+            <button x="1" y="2" width="105" height="25" id="video" stretch="1">
+                <texture>ui_inGame2_opt_button_1</texture>
+                <text font="letterica18" align="c">ui_mm_video</text>
+                <text_color>
+                    <e r="200" g="200" b="200"/>
+                </text_color>
+            </button>
+
+            <button x="89" y="2" width="104" height="25" id="sound" stretch="1">
+                <texture>ui_inGame2_opt_button_1</texture>
+                <text font="letterica18" align="c">ui_mm_sound</text>
+                <text_color>
+                    <e r="200" g="200" b="200"/>
+                </text_color>
+            </button>
+
+            <button x="176" y="2" width="105" height="25" id="gameplay" stretch="1">
+                <texture>ui_inGame2_opt_button_1</texture>
+                <text font="letterica18" align="c">ui_mm_gameplay</text>
+                <text_color>
+                    <e r="200" g="200" b="200"/>
+                </text_color>
+            </button>
+
+            <button x="264" y="2" width="103" height="25" id="controls" stretch="1">
+                <texture>ui_inGame2_opt_button_2</texture>
+                <text font="letterica18" align="c">ui_mm_controls</text>
+                <text_color>
+                    <e r="200" g="200" b="200"/>
+                </text_color>
+            </button>
+        </tab>
+
+        <tab_input_type x="11" y="67" width="368" height="38">
+
+            <button x="99" y="2" width="96" height="24" id="keyboard_mouse" stretch="1">
+				<texture>ui_inGame2_button</texture>
+                <text font="letterica16" align="c">ui_keyboard_mouse</text>
+                <text_color>
+                    <e r="200" g="200" b="200"/>
+                </text_color>
+            </button>
+
+            <button x="196" y="2" width="86" height="24" id="gamepad" stretch="1">
+				<texture>ui_inGame2_button</texture>
+                <text font="letterica16" align="c">ui_gamepad</text>
+                <text_color>
+                    <e r="200" g="200" b="200"/>
+                </text_color>
+            </button>
+        </tab_input_type>
+		
+        <templ_item width="360" height="30"/>
+
+        <cap_template x="26" y="3" width="108" height="24">
+            <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c"/>
+        </cap_template>
+        <selection_color r="255" g="255" b="255"/>
+        <track_template_float x="154" y="6" width="188" height="16" show_value="1">
+            <options_item entry="console_command_undefined_please_check_your_options_script" group="mm_opt_video_adv"/>
+        </track_template_float>
+        <track_template_int x="154" y="6" width="188" height="16" is_integer="1" show_value="1">
+            <options_item entry="console_command_undefined_please_check_your_options_script" group="mm_opt_video_adv"/>
+        </track_template_int>
+        <check_template x="143" y="0.5" width="35" stretch="1" height="29">
+	        <texture>ui_inGame2_checkbox</texture>
+            <options_item entry="console_command_undefined_please_check_your_options_script" group="mm_opt_video_adv"/>
+        </check_template>
+        <list_template x="154" y="5" width="188" height="20">
+            <options_item entry="console_command_undefined_please_check_your_options_script" group="mm_opt_video_adv"/>
+            <list_font r="170" g="170" b="170" font="letterica16"/>
+		    <text_color>
+	            <e r="170" g="170" b="170"/>
+	            <d r="70" g="70" b="70"/>
+		    </text_color>
+        </list_template>
+
+        <cap_header_setup x="8" y="0" width="108" height="15">
+            <text r="170" g="170" b="170" font="letterica16" vert_align="c"/>
+        </cap_header_setup>
+        <header_setup x="0" y="7" width="344" height="15">
+            <texture a="150">ui_inGame2_servers_list_button</texture>
+        </header_setup>
+
+        <btn_template x="270" y="322" width="86" height="24" stretch="1">
+            <text align="c" font="letterica16">Template</text>
+            <texture>ui_inGame2_button</texture>
+			<text_color>
+				<e r="210" g="210" b="210"/>
+			</text_color>
+        </btn_template>
+    </main_dialog>
+
+	<tab_size x="22" y="63" width="354" height="344"/>
+    <tab_controls>
+		<scroll_v x="0" y="30" width="360" height="290"
+            right_ident="0" left_ident="0" top_indent="0" bottom_indent="0"
+            vert_interval="0" always_show_scroll="0" />
+
+        <key_binding x="0" y="0" width="344" height="230">
+            <header_1 x="0" y="0" width="176" height="15">
+                <texture a="150">ui_inGame2_servers_list_button</texture>
+                <auto_static x="2" y="0" width="176" height="15">
+                    <text r="170" g="170" b="170" font="arial_14" x="2" y="1" align="l" vert_align="c" complex_mode="0">ui_mm_action</text>
+                </auto_static>
+            </header_1>
+            <header_2 x="176" y="0" width="84" height="15">
+                <texture a="150">ui_inGame2_servers_list_button</texture>
+                <auto_static x="2" y="0" width="84" height="15">
+                    <text r="170" g="170" b="170" font="arial_14" x="2" y="1" align="l" vert_align="c" complex_mode="0">ui_mm_key</text>
+                </auto_static>
+            </header_2>
+            <header_3 x="260" y="0" width="84" height="15">
+                <texture a="150">ui_inGame2_servers_list_button</texture>
+                <auto_static x="2" y="0" width="68" height="15">
+                    <text r="170" g="170" b="170" font="arial_14" x="2" y="1" align="l" vert_align="c" complex_mode="0">ui_mm_alternative</text>
+                </auto_static>
+            </header_3>
+
+            <frame x="0" y="15" width="343" height="215">
+                <texture>ui_inGame2_servers_list_frame</texture>
+            </frame>
+
+            <scroll_view x="2" y="17" width="341" height="211" always_show_scroll="1" vert_interval="3">
+                <item_group x="0" y="0" width="160" height="25">
+                    <text r="230" g="230" b="230" font="letterica18"/>
+                </item_group>
+
+                <item_key x="0" y="0" width="331" height="18">
+                    <text r="170" g="170" b="170" font="letterica16"/>
+                </item_key>
+            </scroll_view>
+        </key_binding>
+    </tab_controls>
+	
+    <download_static x="251" y="717" width="482" height="51" stretch="1">
+        <texture>ui_patch_back</texture>
+    </download_static>
+
+    <download_text x="262" y="730" width="384" height="30">
+        <text r="170" g="170" b="170" align="c" font="letterica16" complex_mode="0">mm_mp_progress</text>
+    </download_text>
+
+    <progress_download x="280" y="754" width="322" height="10" horz="1" min="0" max="100">
+        <progress>
+            <texture>ui_patch_progress</texture>
+        </progress>
+    </progress_download>
+
+    <btn_cancel_download x="624" y="732" width="88" height="29" stretch="1">
+        <text align="c" font="letterica16">mm_mp_cancel</text>
+        <text_color>
+            <e r="170" g="170" b="170"/>
+        </text_color>
+        <texture>ui_button_ordinary</texture>
+    </btn_cancel_download>
+</w>

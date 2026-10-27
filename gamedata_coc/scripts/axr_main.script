@@ -1,0 +1,36 @@
+--[[
+Callback and module manager for easy plug-in based script management
+by Alundaio
+
+1/31/2016
+axr_main now auto-executes any script that has on_game_load method. To create a new module, simply
+add a on_game_start function
+--]]
+
+-- axr_options.ini
+config = ini_file_ex("axr_options.ltx",true)
+
+-- load default rspec when axr_options created first time
+if not (config:section_exist("graphics")) then
+	get_console():execute("cfg_load " .. getFS():update_path('$game_config$', '').."ixray_settings\\rspec_default.ltx")
+	config:w_value("graphics","rspec_default",true)
+	config:save()
+end
+-------------------------------------------------------------------------------------------------
+function on_game_start()
+	RegisterScriptCallback("main_menu_on_init", this.main_menu_on_init)
+	RegisterScriptCallback("main_menu_on_quit", this.main_menu_on_quit)
+end
+------------------
+-- main_menu_on_init()
+------------------
+function main_menu_on_init(menu)
+	xrs_dyn_music.main_menu_on(menu)
+end
+
+------------------
+-- main_menu_on_quit()
+------------------
+function main_menu_on_quit(menu)
+	xrs_dyn_music.main_menu_off(menu)
+end

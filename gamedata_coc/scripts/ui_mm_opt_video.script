@@ -1,0 +1,39 @@
+class "opt_video" (CUIWindow)
+
+function opt_video:__init() super()
+end
+
+function opt_video:__finalize()
+
+end
+
+function opt_video:InitControls(x, y, xml, handler)
+
+	self:SetWndPos(vector2():set(x,y))
+	self:SetWndSize(vector2():set(738,416))
+	self:SetAutoDelete(true)
+	if xml:NodeExist("frame", 0) then
+		self.bk = xml:InitFrame			("frame", self)
+	end
+	
+	self.focusList = {}
+	self.scroll_v = xml:InitScrollView("main_dialog:scroll_v", self)
+
+	handler.combo_renderer = handler:addComboBox(self, true, "ui_mm_renderer", "renderer", 3, false, system_depends.sdSystemRestart, "combo_renderer")
+	handler.combo_preset = handler:addComboBox(self, true, "ui_mm_quality_presets", "_preset", 6, false, system_depends.sdSystemRestart, "combo_preset")
+	handler:addComboBox(self, true, "ui_mm_resolution", "vid_mode", 7, false, system_depends.sdVidRestart)
+
+	handler:addTrack(self, true, "ui_mm_brightness", "rs_c_brightness", 0.1, false, "float", false, system_depends.sdApplyOnChange)
+	handler:addTrack(self, true, "ui_mm_contrast", "rs_c_contrast", 0.1, false, "float", false, system_depends.sdApplyOnChange)
+	handler:addTrack(self, true, "ui_mm_gamma", "rs_c_gamma", 0.1, false, "float", false, system_depends.sdApplyOnChange)
+	
+	handler:addCheck(self, true, "ui_mm_fullscreen", "rs_fullscreen", system_depends.sdVidRestart)
+	handler:addCheck(self, true, "ui_rs_device_active", "rs_device_active", system_depends.sdNothing)
+	handler:addCheck(self, true, "ui_mm_vsync", "rs_v_sync", system_depends.sdVidRestart)
+
+	handler:addComboBox(self, true, "ui_mm_screenshot_format", "r__screenshot_format", 3, false, system_depends.sdApplyOnChange)
+
+	self.btn_advanced = xml:Init3tButton("main_dialog:btn_template", self)
+	self.btn_advanced:SetTextST("ui_mm_advanced")
+	handler:Register(self.btn_advanced, "btn_advanced_graphic")
+end

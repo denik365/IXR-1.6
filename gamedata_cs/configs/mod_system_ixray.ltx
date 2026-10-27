@@ -1,0 +1,834 @@
+#include "misc\world_space_ui_elements.ltx"
+
+; This is due to the fact that GSC has prescribed the sound of a gun being pulled out
+; w_knife.ltx
+![wpn_knife]
+snd_draw = weapons\draw_silent
+
+![bolt]
+icons_texture = ui\ui_icon_bolt
+inv_scale = 2.0
+
+![inventory]
+slot_persistent_4 = false ;grenades
+
+slot_persistent_13  = false ;backpack
+slot_active_13      = false
+
+; Legacy CS: second slot column paired with primary for pistols-only style UI (replaces engine_external EnableInventoryPistolSlot).
+inventory_secondary_slot_pairing_strict = true
+
+![actor_look_cam_psp]
+!offset
+!autoaim_speed_y
+!autoaim_speed_x
+
+offset_right = -0.4,0.2,0.0
+offset_left = 0.314,0.2,0.0
+use_inertion = true
+
+;m_controller.ltx
+![m_controller_e]
+icon = ui_npc_monster_kontroler
+
+![m_controller_normal]
+icon				= ui_npc_monster_kontroler
+
+![m_controller_normal_fat]
+icon				= ui_npc_monster_kontroler_3
+
+![m_controller_old]
+icon				= ui_npc_monster_kontroler_4
+
+![m_controller_old_fat]
+icon				= ui_npc_monster_kontroler_5
+
+;artefacts.ltx
+![af_base]
+default_to_ruck			= true
+
+![af_glass]
+3d_static_scale			= 0.3
+
+![af_medusa]
+3d_static_scale			= 0.9
+
+![af_electra_flash]
+3d_static_scale			= 0.3
+
+![af_electra_sparkler]
+3d_static_scale			= 0.7
+
+![af_dummy_glassbeads]
+3d_static_rotate			= 0,0,-45
+
+![af_cristall_flower]
+3d_static_rotate			= 90,0,0
+
+![af_eye]
+3d_static_rotate			= -45,-135,180
+
+;items_mp.ltx
+![mp_af_electra_flash]
+default_to_ruck			= false
+
+![mp_af_cta_green]
+default_to_ruck			= false
+
+![mp_af_cta_blue]
+default_to_ruck			= false
+
+;items.ltx
+![bread]
+use_text = st_eat
+eat_portions_num = 1
+3d_static_rotate = -12,-140,30
+3d_static_scale = 1.17
+
+![kolbasa]
+use_text = st_eat
+eat_portions_num = 1
+3d_static_rotate = -16.5,-140,-30
+3d_static_scale = 1.3
+
+![conserva]
+use_text = st_eat
+eat_portions_num = 1
+3d_static_rotate = 19,0,0
+
+![vodka]
+use_text = st_drink
+eat_portions_num = 1
+3d_static_rotate = 0,0,0
+
+![guitar_a]
+3d_static_rotate = 0,-100,100
+
+![energy_drink]
+3d_static_rotate = -10,-10,40
+
+![bandage]
+3d_static_rotate = 40,70,130
+
+![antirad]
+eat_portions_num = 1
+3d_static_rotate = 54,-12,3
+3d_static_scale = 0.9
+
+![medkit]
+3d_static_rotate = 30,-20,0
+3d_static_scale = 0.9
+
+![medkit_army]
+3d_static_rotate = 30,-20,0
+3d_static_scale = 0.9
+
+![medkit_scientic]
+3d_static_rotate = 30,-20,0
+3d_static_scale = 0.9
+
+![device_pda]
+3d_static_rotate = 61,-23,4
+
+![dev_flash_1]
+3d_static_rotate = -40,110,100
+
+![dev_flash_2]
+3d_static_rotate = -40,110,100
+
+![device_torch]
+sound_activate          = device\torch_click
+sound_deactivate        = device\torch_click_off
+
+;outfit.ltx
+![outfit_base]
+3d_static_rotate			= -90,-180,0
+3d_static_scale				= 0.8
+
+![stalker_outfit]
+3d_static_rotate = -84,170,-10
+3d_static_scale = 1
+
+![svoboda_light_outfit]
+3d_static_rotate = -90,-180,0
+
+;fix non-existent particles crash
+![stationary_mgun]
+shell_particles         = weapons\generic_shells
+
+;devices.ltx
+![detector_simple]
+3d_static_rotate = 60,-20,-0
+3d_static_scale = 0.92
+
+;![detector_simple_hud]
+;anm_bore = dev_detector_1_idle_bore
+;anm_bore_16x9 = dev_detector_1_idle_bore_ws, dev_detector_1_idle_bore
+;
+;![detector_advanced_hud]
+;anm_bore = dev_detector_2_idle_bore
+;anm_bore_16x9 = dev_detector_2_idle_bore_ws, dev_detector_1_idle_bore
+;
+;![detector_elite_hud]
+;anm_bore = dev_detector_3_idle_bore
+;anm_bore_16x9 = dev_detector_3_idle_bore_ws, dev_detector_1_idle_bore
+;
+;![detector_scientific_hud]
+;anm_bore = dev_detector_3_idle_bore
+;anm_bore_16x9 = dev_detector_3_idle_bore_ws, dev_detector_1_idle_bore
+
+;w_f1.ltx
+![grenade_f1]
+detonation_threshold_hit= 0.3
+explosion_on_hit = true
+explosion_hit_types = 6, 8 
+explosive_while_not_activated = true
+3d_static_rotate			= -45,-90,0
+3d_static_scale			= 0.7
+
+;w_rgd5.ltx
+![grenade_rgd5]
+detonation_threshold_hit = 0.3
+explosion_on_hit = true
+explosion_hit_types = 6, 8 
+explosive_while_not_activated = true
+3d_static_rotate			= -45,-90,0
+3d_static_scale			= 0.7
+
+![grenade_gd-05]
+3d_static_rotate			= -45,-90,0
+3d_static_scale			= 0.7
+
+;helicopter.ltx
+![helicopter]
+ssa_dyn_factor = 0.001
+ssa_d_cam = 300.0
+
+;prefetch_mp.ltx
+; FreeMP mode
+[prefetch_objects_fmp]:prefetch_objects_mp
+[prefetch_visuals_fmp]:prefetch_visuals_mp
+
+[prefetch_objects_freemp]:prefetch_objects_mp
+[prefetch_visuals_freemp]:prefetch_visuals_mp
+
+[night_vision_base]
+snd_night_vision_on			= weapons\nv_start
+snd_night_vision_off		= weapons\nv_off
+snd_night_vision_idle		= weapons\nv_loop
+snd_night_vision_broken		= weapons\nv_off
+
+night_vision_disabled_maps						= ai_test,ai_test2, andy_test_
+
+; m_stalker.ltx
+![stalker]
+;---FIRE QUEUE PARAMETERS
+fire_queue_section = fire_queue_params
+
+[fire_queue_params]  ; min < 15 < medium < 30 < max
+pstl_min_queue_size_far			= 1
+pstl_max_queue_size_far			= 1
+pstl_min_queue_interval_far		= 3000
+pstl_max_queue_interval_far		= 5000
+
+pstl_min_queue_size_medium		= 1
+pstl_max_queue_size_medium		= 1
+pstl_min_queue_interval_medium	= 1000
+pstl_max_queue_interval_medium	= 3000
+
+pstl_min_queue_size_close		= 1
+pstl_max_queue_size_close		= 1
+pstl_min_queue_interval_close	= 500
+pstl_max_queue_interval_close	= 1000
+
+
+
+shtg_min_queue_size_far			= 1
+shtg_max_queue_size_far			= 1
+shtg_min_queue_interval_far		= 1500
+shtg_max_queue_interval_far		= 2000
+
+shtg_min_queue_size_medium		= 1
+shtg_max_queue_size_medium		= 1
+shtg_min_queue_interval_medium	= 1000
+shtg_max_queue_interval_medium	= 1500
+
+shtg_min_queue_size_close		= 2
+shtg_max_queue_size_close		= 2
+shtg_min_queue_interval_close	= 500
+shtg_max_queue_interval_close	= 1000
+
+
+
+snp_min_queue_size_far			= 1
+snp_max_queue_size_far			= 1
+snp_min_queue_interval_far		= 2000
+snp_max_queue_interval_far		= 3000
+
+snp_min_queue_size_medium		= 1
+snp_max_queue_size_medium		= 1
+snp_min_queue_interval_medium	= 1500
+snp_max_queue_interval_medium	= 2000
+
+snp_min_queue_size_close		= 1
+snp_max_queue_size_close		= 1
+snp_min_queue_interval_close	= 1000
+snp_max_queue_interval_close	= 1500
+
+
+
+auto_min_queue_size_far			= 1
+auto_max_queue_size_far			= 2
+auto_min_queue_interval_far		= 1500
+auto_max_queue_interval_far		= 2000
+
+auto_min_queue_size_medium		= 2
+auto_max_queue_size_medium		= 3
+auto_min_queue_interval_medium	= 1000
+auto_max_queue_interval_medium	= 1500
+
+auto_min_queue_size_close		= 3
+auto_max_queue_size_close		= 5
+auto_min_queue_interval_close	= 500
+auto_max_queue_interval_close	= 1000
+
+
+
+mchg_min_queue_size_far			= 10
+mchg_max_queue_size_far			= 15
+mchg_min_queue_interval_far		= 3000
+mchg_max_queue_interval_far		= 4000
+
+mchg_min_queue_size_medium		= 10
+mchg_max_queue_size_medium		= 15
+mchg_min_queue_interval_medium	= 2000
+mchg_max_queue_interval_medium	= 3000
+
+mchg_min_queue_size_close		= 10
+mchg_max_queue_size_close		= 15
+mchg_min_queue_interval_close	= 1000
+mchg_max_queue_interval_close	= 2000
+
+;creatures/monsters.ltx
+![monsters_common]
+corpse_remove_game_time_interval = 24 ; in hours
+stay_after_death_time_interval = 36 ; in hours
+
+;defines.ltx
+![default_weapon_params]
+3d_static_rotate			= 0.000000,-90,0.000000
+3d_static_scale			= 0.900000
+
+![hud_base] ; Gunslinger Style
+;наклоны оружия при ходьбе
+hud_move_speed_rot = 3			;скорость доворота до заданного угла			
+hud_move_speed_pos = 2		        ;скорость перемещения до заданной позиции
+hud_move_stabilize_factor = 3.5		;во сколько раз быстрее возвращаемся в нейтральное положение при идле
+hud_move_weaponhide_factor = 3.5	;во сколько раз быстрее возвращаемся в нейтральное положение при убирании оружия
+hud_move_unzoom_factor = 2.0
+hud_move_slow_factor = 0.5		;во сколько раз менять амплитуду при шаге
+hud_move_crouch_factor = 0.5		;во сколько раз менять амплитуду при присяде
+hud_move_slow_crouch_factor = 0.3	;во сколько раз менять амплитуду при полном присяде
+
+;задаются максимальные отклонения от центрального в разных режимах ходьбы
+;Аддитивно!
+
+;стрейф влево
+hud_move_left_offset_pos = -0.03,-0.018,0
+hud_move_left_offset_rot = 0,0,-3.5
+
+hud_move_left_offset_pos_16x9 = -0.03,-0.018,0
+hud_move_left_offset_rot_16x9 = 0,0,-3.5
+
+;стрейф вправо
+hud_move_right_offset_pos = 0.03,-0.005,0
+hud_move_right_offset_rot = 0,0,5
+
+hud_move_right_offset_pos_16x9 = 0.03,-0.005,0
+hud_move_right_offset_rot_16x9 = 0,0,5
+
+;движение вперед
+hud_move_forward_offset_pos = 0,-0.005,-0.035
+hud_move_forward_offset_rot = 0,0,0
+
+hud_move_forward_offset_pos_16x9 = 0,-0.005,-0.035
+hud_move_forward_offset_rot_16x9 = 0,0,0
+
+;движение назад
+hud_move_back_offset_pos = 0,-0.005,0.045
+hud_move_back_offset_rot = 0,0,0
+
+hud_move_back_offset_pos_16x9 = 0,-0.005,0.045
+hud_move_back_offset_rot_16x9 = 0,0,0
+
+;прыжок
+hud_move_jump_offset_pos = 0,0.05,0.03
+hud_move_jump_offset_rot = 0,-10,-10
+
+hud_move_jump_offset_pos_16x9 = 0,0.05,0.03
+hud_move_jump_offset_rot_16x9 = 0,-10,-10
+
+;падение
+hud_move_fall_offset_pos = 0,-0.05,0.06
+hud_move_fall_offset_rot = 0,5,0
+
+hud_move_fall_offset_pos_16x9 = 0,-0.05,0.06
+hud_move_fall_offset_rot_16x9 = 0,5,0
+
+;приземление - первая фаза
+hud_move_landing_offset_pos = 0,-0.2,0.03
+hud_move_landing_offset_rot = 0,-5,10
+
+hud_move_landing_offset_pos_16x9 = 0,-0.2,0.03
+hud_move_landing_offset_rot_16x9 = 0,-5,10
+
+;приземление - вторая фаза
+hud_move_landing2_offset_pos = 0,-0.3,0.03
+hud_move_landing2_offset_rot = 0,-13,20
+
+hud_move_landing2_offset_pos_16x9 = 0,-0.3,0.03
+hud_move_landing2_offset_rot_16x9 = 0,-13,20
+
+;переход из стойки в присяд
+to_crouch_time = 0.15
+hud_move_to_crouch_offset_pos = 0,-0.02, 0
+hud_move_to_crouch_offset_rot = 0,1.5,-4
+
+hud_move_to_crouch_offset_pos_16x9 = 0,-0.02, 0
+hud_move_to_crouch_offset_rot_16x9 = 0,1.5,-4
+
+;переход из присяда в стойку
+from_crouch_time = 0.15
+hud_move_from_crouch_offset_pos = 0,-0.008,0
+hud_move_from_crouch_offset_rot = 0,-0.8,3
+
+hud_move_from_crouch_offset_pos_16x9 = 0,-0.008,0
+hud_move_from_crouch_offset_rot_16x9 = 0,-0.8,3
+
+;переход из присяда в низкий присяд
+to_slow_crouch_time = 0.15
+hud_move_to_slow_crouch_offset_pos = 0,-0.05, 0
+hud_move_to_slow_crouch_offset_rot = 0,1,-2
+
+hud_move_to_slow_crouch_offset_pos_16x9 = 0,-0.05, 0
+hud_move_to_slow_crouch_offset_rot_16x9 = 0,1,-2
+
+;переход из низкого присяда в присяд
+from_slow_crouch_time = 0.15
+hud_move_from_slow_crouch_offset_pos = 0,0.02,0
+hud_move_from_slow_crouch_offset_rot = 0,-1,2
+
+hud_move_from_slow_crouch_offset_pos_16x9 = 0,0.02,0
+hud_move_from_slow_crouch_offset_rot_16x9 = 0,-1,2
+
+;переход из обычного в наклон влево
+to_llookout_time = 0.15
+hud_move_to_llookout_offset_pos 	= -0.01, 0, 0
+hud_move_to_llookout_offset_rot		= 0,0,0
+hud_move_to_llookout_offset_pos_16x9 	= -0.01, 0, 0
+hud_move_to_llookout_offset_rot_16x9	= 0,0,0
+
+;переход из наклона влево в обычный
+from_llookout_time = 0.15
+hud_move_from_llookout_offset_pos 	= -0.01, 0, 0
+hud_move_from_llookout_offset_rot	= 0,0,0
+hud_move_from_llookout_offset_pos_16x9 	= -0.01, 0, 0
+hud_move_from_llookout_offset_rot_16x9	= 0,0,0
+
+
+;переход из обычного в наклон вправо
+to_rlookout_time = 0.15
+hud_move_to_rlookout_offset_pos 	= 0.01, 0, 0
+hud_move_to_rlookout_offset_rot		= 0,0,0
+hud_move_to_rlookout_offset_pos_16x9 	= 0.01, 0, 0
+hud_move_to_rlookout_offset_rot_16x9	= 0,0,0
+
+;переход из наклона вправо в обычный
+from_rlookout_time = 0.15
+hud_move_from_rlookout_offset_pos 	= 0.01, 0, 0
+hud_move_from_rlookout_offset_rot	= 0,0,0
+hud_move_from_rlookout_offset_pos_16x9 	= 0.01, 0, 0
+hud_move_from_rlookout_offset_rot_16x9	= 0,0,0
+
+;наклон влево (постоянная компонента)
+hud_move_llookout_offset_speed_factor = 2.8
+hud_move_llookout_offset_pos 		= -0.045, -0.03, 0
+hud_move_llookout_offset_pos_16x9 	= -0.045, -0.03, 0
+hud_move_llookout_offset_rot 		= 0, 0, -9
+hud_move_llookout_offset_rot_16x9 	= 0, 0, -9
+
+;наклон вправо (постоянная компонента)
+hud_move_rlookout_offset_speed_factor = 2.8
+hud_move_rlookout_offset_pos 		= 0.04, -0.01, 0
+hud_move_rlookout_offset_pos_16x9 	= 0.04, -0.01, 0
+hud_move_rlookout_offset_rot 		= 0, 0, 10
+hud_move_rlookout_offset_rot_16x9 	= 0, 0, 10
+
+
+;аналогично для прицеливания
+;переход из стойки в присяд
+hud_aim_move_to_crouch_offset_pos = 0,0.003, 0
+hud_aim_move_to_crouch_offset_rot = 0,0.3,-0.5
+
+hud_aim_move_to_crouch_offset_pos_16x9 = 0,0.003, 0
+hud_aim_move_to_crouch_offset_rot_16x9 = 0,0.3,-0.5
+
+;переход из присяда в стойку
+hud_aim_move_from_crouch_offset_pos = 0,-0.003,0
+hud_aim_move_from_crouch_offset_rot = 0,-0.3,0.5
+
+hud_aim_move_from_crouch_offset_pos_16x9 = 0,-0.003,0
+hud_aim_move_from_crouch_offset_rot_16x9 = 0,-0.3,0.5
+
+;переход из присяда в низкий присяд
+hud_aim_move_to_slow_crouch_offset_pos = 0,0.001, 0
+hud_aim_move_to_slow_crouch_offset_rot = 0,0.3,-0.5
+
+hud_aim_move_to_slow_crouch_offset_pos_16x9 = 0,0.002, 0
+hud_aim_move_to_slow_crouch_offset_rot_16x9 = 0,0.3,-0.5
+
+;переход из низкого присяда в присяд
+hud_aim_move_from_slow_crouch_offset_pos = 0,-0.001,0
+hud_aim_move_from_slow_crouch_offset_rot = 0,-0.3,0.5
+
+hud_aim_move_from_slow_crouch_offset_pos_16x9 = 0,-0.001,0
+hud_aim_move_from_slow_crouch_offset_rot_16x9 = 0,-0.3,0.5
+
+;переход из обычного в наклон влево
+hud_aim_move_to_llookout_offset_pos 	        = -0.003, 0, 0
+hud_aim_move_to_llookout_offset_rot		= 0,0,-0.6
+hud_aim_move_to_llookout_offset_pos_16x9 	= -0.003, 0, 0
+hud_aim_move_to_llookout_offset_rot_16x9	= 0,0,-0.6
+
+;переход из наклона влево в обычный
+hud_aim_move_from_llookout_offset_pos 	        = 0, 0, 0
+hud_aim_move_from_llookout_offset_rot	        = 0,0,-1
+hud_aim_move_from_llookout_offset_pos_16x9 	= 0, 0, 0
+hud_aim_move_from_llookout_offset_rot_16x9	= 0,0,-1
+
+
+;переход из обычного в наклон вправо
+hud_aim_move_to_rlookout_offset_pos 	        = 0.003, 0, 0
+hud_aim_move_to_rlookout_offset_rot		= 0,0,0.6
+hud_aim_move_to_rlookout_offset_pos_16x9 	= 0.003, 0, 0
+hud_aim_move_to_rlookout_offset_rot_16x9	= 0,0,0.6
+
+;переход из наклона вправо в обычный
+hud_aim_move_from_rlookout_offset_pos 	        = 0, 0, 0
+hud_aim_move_from_rlookout_offset_rot	        = 0,0,1
+hud_aim_move_from_rlookout_offset_pos_16x9 	= 0, 0, 0
+hud_aim_move_from_rlookout_offset_rot_16x9	= 0,0,1
+
+;прыжок
+hud_aim_move_jump_offset_pos = 0,0.015,0.009
+hud_aim_move_jump_offset_rot = 0,-3,-3
+
+hud_aim_move_jump_offset_pos_16x9 = 0,0.015,0.009
+hud_aim_move_jump_offset_rot_16x9 = 0,-3,-3
+
+;падение
+hud_aim_move_fall_offset_pos = 0,-0.015,0.018
+hud_aim_move_fall_offset_rot = 0,1.5,0
+
+hud_aim_move_fall_offset_pos_16x9 = 0,-0.015,0.018
+hud_aim_move_fall_offset_rot_16x9 = 0,1.5,0
+
+;приземление - первая фаза
+hud_aim_move_landing_offset_pos = 0,-0.06,0.009
+hud_aim_move_landing_offset_rot = 0,-1.5,3
+
+hud_aim_move_landing_offset_pos_16x9 = 0,-0.06,0.009
+hud_aim_move_landing_offset_rot_16x9 = 0,-1.5,3
+
+;приземление - вторая фаза
+hud_aim_move_landing2_offset_pos = 0,-0.09,0.009
+hud_aim_move_landing2_offset_rot = 0,-3.9,6
+
+hud_aim_move_landing2_offset_pos_16x9 = 0,-0.09,0.009
+hud_aim_move_landing2_offset_rot_16x9 = 0,-3.9,6
+
+hud_collision_enabled							= true
+hud_collision_offset_pos						= 0,-0.5,0
+hud_collision_offset_pos_16x9					= 0,-0.5,0
+hud_collision_offset_rot						= -0.8,0,0
+hud_collision_offset_rot_16x9					= -0.8,0,0
+
+;effectors.ltx
+![bobbing_effector] ; Gunslinger Style
+
+;спринт
+sprint_amplitude		= 	0.014
+sprint_speed			= 	10.0
+
+;бег
+run_amplitude			=	0.0075
+run_speed			=	10.0
+zoom_run_amplitude		=	0.005
+zoom_run_speed			=	7.0
+
+;замедление/прицеливание
+walk_amplitude			=	0.005
+walk_speed				=   7.0
+zoom_walk_amplitude		=	0.005
+zoom_walk_speed			=   7.0
+
+;присяд
+crouch_amplitude		=   0.0056
+crouch_speed			=   7.5
+zoom_crouch_amplitude	=   0.0056
+zoom_crouch_speed		=   7.5
+
+;присяд+замедление
+slow_crouch_amplitude   =   0.0042
+slow_crouch_speed       =   5.625
+zoom_slow_crouch_amplitude   =   0.0042
+zoom_slow_crouch_speed       =   5.625
+
+;тяжелое дыхание
+limp_amplitude			=	0.011
+limp_speed				=	6.0
+zoom_limp_amplitude		=	0.007
+zoom_limp_speed			=	6.0
+
+
+;Скорость изменения амплитуды раскачки при смене режима перемещения
+amplitude_delta			= 	0.01 
+
+;weapons.ltx
+![ammo_base]
+3d_static_rotate = 11,-12,1
+3d_static_scale = 0.75
+
+![ammo_9x18_fmj]
+3d_static_scale	= 0.85
+
+![ammo_9x18_pmm]
+3d_static_scale = 0.85
+
+![ammo_9x19_fmj]
+3d_static_scale = 0.85
+
+![ammo_9x19_pbp]
+3d_static_scale = 0.85
+
+![ammo_gauss]
+3d_static_rotate = 0,90,0
+
+![ammo_og-7b]
+3d_static_scale = 1
+
+![ammo_vog-25]
+3d_static_rotate = -149,32,1
+
+![ammo_vog-25p]
+3d_static_rotate = -149,32,1
+
+![ammo_m209]
+3d_static_rotate = -149,32,1
+
+![wpn_addon_scope]
+3d_static_rotate = 0,-90,-90
+
+![wpn_addon_scope_susat]
+3d_static_rotate = 0,-90,0
+
+![wpn_addon_silencer]
+3d_static_rotate = 0,-90,0
+
+![wpn_addon_grenade_launcher]
+3d_static_rotate = 0,-90,0
+
+![wpn_addon_grenade_launcher_m203]
+3d_static_rotate = 0,-90,0
+
+;w_binoc.ltx
+![wpn_binoc]
+3d_static_rotate = 22.5, 22.5, -11.25
+
+;w_gauss.ltx
+![wpn_gauss]
+vibration_time = 2.0
+
+;w_mp5.ltx
+![wpn_mp5]
+3d_static_scale = 0.8
+
+;w_pm.ltx
+![wpn_pm]
+3d_static_scale = 0.9
+
+;w_svd.ltx
+![wpn_svd]
+3d_static_scale			= 0.6
+
+;w_svu.ltx
+![wpn_svu]
+3d_static_scale			= 0.7
+
+[hud_movement_layers]
+movement_layer_0             = blend\walk.anm, 1, 1.5        	 ; Walk
+movement_layer_1             = blend\walk.anm, 0.7, 1.5        ; Walk slow
+movement_layer_2             = blend\walk.anm, 0.5, 1.5        ; Crouch
+movement_layer_3             = blend\walk.anm, 0.3, 1.5        ; Crouch slow
+movement_layer_4             = blend\sprint.anm, 1.55, 2       ; Sprint
+
+
+[inventory_sort_categories]
+all = 1
+weapons = 1
+ammo = 1
+armor = 1
+devices = 1
+consumables = 1
+artefacts = 1
+attachments = 1
+
+[inventory_sort_categories:all]
+name = st_inv_sort_all
+hint = st_inv_sort_all_hint
+show_text = true
+
+[inventory_sort_categories:weapons]
+name = st_inv_sort_weapons
+hint = st_inv_sort_weapons_hint
+icon = ui_icon_weapons
+show_text = true
+
+[inventory_sort_categories:ammo]
+name = st_inv_sort_ammo
+hint = st_inv_sort_ammo_hint
+show_text = true
+
+[inventory_sort_categories:armor]
+name = st_inv_sort_armor
+hint = st_inv_sort_armor_hint
+show_text = true
+
+[inventory_sort_categories:devices]
+name = st_inv_sort_devices
+hint = st_inv_sort_devices_hint
+show_text = true
+
+[inventory_sort_categories:consumables]
+name = st_inv_sort_consumables
+hint = st_inv_sort_consumables_hint
+show_text = true
+
+[inventory_sort_categories:artefacts]
+name = st_inv_sort_artefacts
+hint = st_inv_sort_artefacts_hint
+show_text = true
+
+[inventory_sort_categories:attachments]
+name = st_inv_sort_attachments
+hint = st_inv_sort_attachments_hint
+show_text = true
+
+[dynamic_wallmark]:space_restrictor
+GroupControlSection =
+$spawn      = "ai\dynamic_wallmark"
+$def_sphere = 1
+class = DYNA_WM
+
+shape_transp_color    = 135, 245, 66, 24
+[auto_aiming]
+
+; fraction of the full height of the target. 0.0 aim at legs, 1.0f aim at head
+height_fraction = 0.72
+
+; how easy it is to autoaim, 0-1, lerps between easy and norm
+easiness = 0.0
+
+; near, midnear, far distances a-b-c
+distance_a = 1.0
+distance_b = 4.0
+distance_c = 80.0
+
+; threshold angle differences for targets near and far
+dotp_a_norm = 0.7
+dotp_b_norm = 0.99
+dotp_c_norm = 0.999999
+
+dotp_a_easy = 0.7
+dotp_b_easy = 0.8
+dotp_c_easy = 0.9
+
+; no weapon, aiming at chars to talk to them
+; a-b works as easy
+; b-c targets are ignored
+
+![m_poltergeist_normal_tele];m_poltergeist.ltx
+Tele_Time_Object_Keep					= 10000
+Tele_Object_Min_Mass					= 0
+Tele_Object_Max_Mass					= 10000
+
+Tele_Shooting_From_Weapon_Enable        = off;                   Разрешает возможность стрелять с оружия по врагу.
+Tele_Activate_N_Throw_Grenade           = on;                   Разрешает выдрать чеку и кинуть гранату во врага.
+Tele_Max_Pickuped_Weapons				= 3; 					Кол-во стреляющего оружия, которое может быть захвачено телекинезом.
+Particle_Tele_Object					= static\fire_distort;	Проигрываемый партикл под предметом, чисто для красоты.
+
+; Множители урона от попадания брошенными предметами в актёра.
+; Значение — процент от максимального HP цели (1.0 = 100% HP).
+; Итоговый урон = factor - (strike_protection * condition костюма). Если результат < 0, урон = 0.
+; 0.0 - урон от попаданий предметами отключается.
+; Пример: factor=0.25, костюм новичка (strike_protection=0.1) → 0.25-0.1 = 0.15 урона (15% HP).
+; Пример: factor=0.45, экзо (strike_protection=0.4) → 0.45-0.4 = 0.05 урона (5% HP).
+Novice_Difficulty_Throwed_Object_Hit_Factor = 0.25
+Stalker_Difficulty_Throwed_Object_Hit_Factor = 0.35
+Veteran_Difficulty_Throwed_Object_Hit_Factor = 0.45
+Master_Difficulty_Throwed_Object_Hit_Factor = 0.55
+
+; Угловая скорость наведения оружия на врага.
+; Указывается в градусах/с. 
+; Нужно чтобы оружие не наводилось турель-like. Хотя, вы можете это сделлать, проставив везде 360.
+Novice_Difficulty_Angular_Speed			= 180.0
+Stalker_Difficulty_Angular_Speed		= 200.0
+Veteran_Difficulty_Angular_Speed		= 240.0
+Master_Difficulty_Angular_Speed			= 280.0
+
+; Погрешность наведения на врага, после которой можно стрелять. Указывается в градусах/с (1..180)
+; Чем ниже сложность - тем больше погрешность для начала стрельбы - тем больше будет потрачено патрон.
+; Настраивается вместе с параметрами %difficulty%_Angular_Speed, чтобы при низких уровнях сложности - оружие в случае идеального наведения на модель врага.
+; 1deg отклонения автоаима - оружие начнёт стрелять только в случае идеального наведения в центр модели врага.
+; 180deg отклонения - оружие начинает стрелять, даже когда смотрит в противоположну сторону, относительно врага.
+Novice_Difficulty_Error_Angle			= 30.0
+Stalker_Difficulty_Error_Angle			= 20.0
+Veteran_Difficulty_Error_Angle			= 15.0
+Master_Difficulty_Error_Angle			= 8
+
+![m_burer_e];m_burer.ltx
+Tele_Time_To_Hold		 				= 10000
+Tele_Object_Min_Mass					= 1
+Tele_Object_Max_Mass					= 10000
+Tele_Shooting_From_Weapon_Enable        = off;                   Разрешает возможность стрелять с оружия по врагу.
+Tele_Activate_N_Throw_Grenade           = on;                   Разрешает выдрать чеку и кинуть гранату во врага.
+Tele_Max_Pickuped_Weapons				= 1; 					Кол-во стреляющего оружия, которое может быть захвачено телекинезом.
+Particle_Tele_Object					= static\fire_distort;	Проигрываемый партикл под предметом, чисто для красоты.
+
+; Множители урона от попадания брошенными предметами в актёра.
+; Значение — процент от максимального HP цели (1.0 = 100% HP).
+; Итоговый урон = factor - (strike_protection * condition костюма). Если результат < 0, урон = 0.
+; 0.0 - урон от попаданий предметами отключается.
+; Пример: factor=0.25, костюм новичка (strike_protection=0.1) → 0.25-0.1 = 0.15 урона (15% HP).
+; Пример: factor=0.45, экзо (strike_protection=0.4) → 0.45-0.4 = 0.05 урона (5% HP).
+Novice_Difficulty_Throwed_Object_Hit_Factor = 0.25
+Stalker_Difficulty_Throwed_Object_Hit_Factor = 0.35
+Veteran_Difficulty_Throwed_Object_Hit_Factor = 0.45
+Master_Difficulty_Throwed_Object_Hit_Factor = 0.55
+
+; Угловая скорость наведения оружия на врага. Указывается в градусах/с. 
+; Нужно чтобы оружие не наводилось турель-like. Хотя, вы можете это сделлать, проставив везде 360.
+Novice_Difficulty_Angular_Speed			= 180.0
+Stalker_Difficulty_Angular_Speed		= 200.0
+Veteran_Difficulty_Angular_Speed		= 240.0
+Master_Difficulty_Angular_Speed			= 280.0
+
+; Погрешность наведения на врага, после которой можно стрелять. Указывается в градусах/с (1..180)
+; Чем ниже сложность - тем больше погрешность для начала стрельбы - тем больше будет потрачено патрон.
+; Настраивается вместе с параметрами %difficulty%_Angular_Speed, чтобы при низких уровнях сложности - оружие в случае идеального наведения на модель врага.
+; 1deg отклонения автоаима - оружие начнёт стрелять только в случае идеального наведения в центр модели врага.
+; 180deg отклонения - оружие начинает стрелять, даже когда смотрит в противоположну сторону, относительно врага.
+Novice_Difficulty_Error_Angle			= 30.0
+Stalker_Difficulty_Error_Angle			= 20.0
+Veteran_Difficulty_Error_Angle			= 15.0
+Master_Difficulty_Error_Angle			= 8

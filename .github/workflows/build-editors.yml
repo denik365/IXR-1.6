@@ -1,0 +1,223 @@
+name: 'Build editors'
+
+on:
+  push:
+    branches:
+      - '**'
+    paths:
+      - '.github/workflows/**'
+      - 'cmake/**'
+      - 'gamedata*/**'
+      - 'sdk/**'
+      - 'src/**'
+      - '**/CMakeLists.txt'
+      - '**/*.ltx'
+      - '**/*.json'
+  pull_request:
+    branches:
+      - '**'
+    paths:
+      - '.github/workflows/**'
+      - 'cmake/**'
+      - 'gamedata*/**'
+      - 'sdk/**'
+      - 'src/**'
+      - '**/CMakeLists.txt'
+      - '**/*.ltx'
+      - '**/*.json'
+
+defaults:
+  run:
+    shell: pwsh
+
+jobs:
+  build-editors:
+    name: 'Build editors'
+
+    strategy:
+      matrix:
+        system:
+          - windows-2022
+        preset:
+          - Editors
+        platform:
+          - x64
+        config:
+          - Debug
+          - RelWithDebInfo
+
+    runs-on: ${{ matrix.system }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Cache packages
+        uses: actions/cache@v6
+        with:
+          key: ${{ matrix.preset }}-NuGet-${{ hashFiles('**/Packages.config') }}
+          restore-keys: |
+            ${{ matrix.preset }}-NuGet-${{ hashFiles('**/Packages.config') }}
+            ${{ matrix.preset }}-NuGet-
+          path: |
+            ~/.nuget/packages
+
+      - name: Configure editors
+        run: |
+          cmake `
+            --preset ${{ matrix.preset }}-${{ matrix.platform }}-${{ runner.os }}
+
+      - name: Build editors
+        run: |
+          cmake `
+            --build `
+            --target LevelEditor ActorEditor ParticlesEditor ShaderEditor `
+            --preset ${{ matrix.preset }}-${{ matrix.platform }}-${{ runner.os }}-${{ matrix.config }}
+
+      - name: Upload binaries
+        uses: actions/upload-artifact@v7
+        with:
+          name: editors-binaries-${{ matrix.system }}-${{ matrix.platform }}-${{ matrix.config }}-${{ github.sha }}
+          path: |
+            build/${{ matrix.platform }}/${{ matrix.preset }}-${{ runner.os }}/bin/${{ matrix.config }}/*.exe
+            build/${{ matrix.platform }}/${{ matrix.preset }}-${{ runner.os }}/bin/${{ matrix.config }}/*.dll
+
+      - name: Upload symbols
+        uses: actions/upload-artifact@v7
+        if: ${{ matrix.config != 'Release' }}
+        with:
+          name: editors-symbols-${{ matrix.system }}-${{ matrix.platform }}-${{ matrix.config }}-${{ github.sha }}
+          path: |
+            build/${{ matrix.platform }}/${{ matrix.preset }}-${{ runner.os }}/bin/${{ matrix.config }}/*.pdb
+
+      - name: Upload libraries
+        uses: actions/upload-artifact@v7
+        with:
+          name: editors-libraries-${{ matrix.system }}-${{ matrix.platform }}-${{ matrix.config }}-${{ github.sha }}
+          path: |
+            build/${{ matrix.platform }}/${{ matrix.preset }}-${{ runner.os }}/lib/${{ matrix.config }}/
+
+      - name: Upload packages
+        uses: actions/upload-artifact@v7
+        if: ${{ (matrix.config == 'Debug' && matrix.platform == 'x64') }}
+        with:
+          name: editors-packages-${{ matrix.system }}-${{ github.sha }}
+          path: |
+            build/${{ matrix.platform }}/${{ matrix.preset }}-${{ runner.os }}/packages/
+
+  pack-assets:
+    name: 'Pack assets'
+    needs: [build-editors]
+    strategy:
+      matrix:
+        system: [windows-2022]
+    runs-on: ${{ matrix.system }}
+  
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+  
+      - name: Setup compressor
+        uses: ixray-team/setup-compressor@v0.3
+        with:
+          codebase: '1.6-stcop'
+  
+      - name: Generate patches
+        run: |
+          ${{ github.workspace }}/util/generate-patch.bat xrCompress.exe
+          type *.log
+  
+      - name: Upload assets (CoP)
+        shell: cmd
+        run: |
+          if exist gamedata rd /s /q gamedata
+          xcopy /e /i patch gamedata
+      - uses: actions/upload-artifact@v7
+        with:
+          name: editors-assets-cop-${{ github.sha }}
+          path: |
+            gamedata/
+            rawdata/
+            .xrignore
+            ActorEditorLevel.cform
+            fs*.ltx
+          include-hidden-files: true
+  
+      - name: Upload assets (CS)
+        shell: cmd
+        run: |
+          if exist gamedata rd /s /q gamedata
+          xcopy /e /i patch_cs gamedata
+      - uses: actions/upload-artifact@v7
+        with:
+          name: editors-assets-cs-${{ github.sha }}
+          path: |
+            gamedata/
+            rawdata/
+            .xrignore
+            ActorEditorLevel.cform
+            fs*.ltx
+          include-hidden-files: true
+  
+      - name: Upload assets (SoC)
+        shell: cmd
+        run: |
+          if exist gamedata rd /s /q gamedata
+          xcopy /e /i patch_soc gamedata
+      - uses: actions/upload-artifact@v7
+        with:
+          name: editors-assets-soc-${{ github.sha }}
+          path: |
+            gamedata/
+            rawdata/
+            .xrignore
+            ActorEditorLevel.cform
+            fs*.ltx
+          include-hidden-files: true
+
+  publish-editors:
+    name: 'Publish editors ${{ matrix.variant }}'
+    needs: [pack-assets]
+    strategy:
+      matrix:
+        system: [windows-2022]
+        platform: [x64]
+        preset: [Editors]
+        config: [RelWithDebInfo]
+        variant: [cop, cs, soc]
+    runs-on: ${{ matrix.system }}
+  
+    steps:
+      - name: Get editors binaries
+        uses: actions/download-artifact@v8
+        with:
+          name: editors-binaries-${{ matrix.system }}-${{ matrix.platform }}-${{ matrix.config }}-${{ github.sha }}
+          path: build/${{ matrix.platform }}/${{ matrix.preset }}-${{ runner.os }}/bin/${{ matrix.config }}/
+  
+      - name: Get assets (${{ matrix.variant }})
+        uses: actions/download-artifact@v8
+        with:
+          name: editors-assets-${{ matrix.variant }}-${{ github.sha }}
+          path: ./
+  
+      - name: Move binaries to ./bin
+        run: |
+          mkdir ${{ github.workspace }}/bin
+          move ${{ github.workspace }}/build/${{ matrix.platform }}/${{ matrix.preset }}-${{ runner.os }}/bin/${{ matrix.config }}/*.* ${{ github.workspace }}/bin
+  
+      - name: Upload publish artifact (${{ matrix.variant }})
+        uses: actions/upload-artifact@v7
+        with:
+          name: editors-publish-${{ matrix.variant }}-${{ matrix.system }}-${{ matrix.platform }}-${{ github.sha }}
+          path: |
+            bin/
+            gamedata/
+            rawdata/
+            .xrignore
+            ActorEditorLevel.cform
+            fs*.ltx
+          include-hidden-files: true

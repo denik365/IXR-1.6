@@ -1,0 +1,35 @@
+class "opt_controls" (CUIWindow)
+
+function opt_controls:__init() super()
+end
+
+function opt_controls:__finalize()
+
+end
+
+function opt_controls:InitControls(x, y, xml, handler)
+
+	self:SetWndPos(vector2():set(x,y))
+	self:SetWndSize(vector2():set(738,416))
+	self:SetAutoDelete(true)
+	
+	self.focusList = {}
+
+	if xml:NodeExist("frame", 0) then
+		self.bk = xml:InitFrame("frame", self)
+	end
+	self.scroll_v = xml:InitScrollView("tab_controls:scroll_v", self)
+
+	handler:addTrack(self, true, "ui_mm_mouse_sense", "mouse_sens", 0.01, false, "float", true, system_depends.sdNothing)
+	handler:addTrack(self, true, "ui_mm_mouse_sense_ui", "mouse_sens_ui", 0.01, false, "float", true, system_depends.sdNothing)
+	handler:addCheck(self, true, "ui_mm_invert_mouse", "mouse_invert", system_depends.sdNothing)
+
+	self.kb = xml:InitKeyBinding	("tab_controls:key_binding",			nil)
+    handler:addControl(self, nil, nil, self.kb)
+
+	self.default_btn = xml:Init3tButton("main_dialog:btn_template", 			self)
+	self.default_btn:SetTextST("ui_mm_default")
+	handler:Register(self.default_btn, "btn_keyb_default")
+
+
+end

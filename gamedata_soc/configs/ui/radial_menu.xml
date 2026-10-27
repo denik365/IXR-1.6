@@ -1,0 +1,69 @@
+<w>
+	<main x="0" y="0" width="1024" height="768"/>
+	
+	<gamepad_legend x="0" y="733" width="1024" height="50" spacing="3">
+		<auto_static x="0" y="0" width="22" height="30">
+			<window_name>rmw_drop_weapon</window_name>
+			<text font="graffiti19" vert_align="c">ui_rmw_drop_weapon</text>
+		</auto_static>
+		<auto_static x="0" y="0" width="22" height="30">
+			<window_name>rmw_night_vision</window_name>
+			<text font="graffiti19" vert_align="c">ui_rmw_night_vision</text>
+		</auto_static>
+		<auto_static x="0" y="0" width="22" height="30">
+			<window_name>rmw_wpn_func</window_name>
+			<text font="graffiti19" vert_align="c">ui_rmw_wpn_func</text>
+		</auto_static>
+		<auto_static x="0" y="0" width="22" height="30">
+			<window_name>rmw_fire_mode</window_name>
+			<text font="graffiti19" vert_align="c">ui_rmw_fire_mode</text>
+		</auto_static>
+		<auto_static x="0" y="0" width="22" height="30">
+			<window_name>rmw_ammo_next</window_name>
+			<text font="graffiti19" vert_align="c">ui_rmw_ammo_next</text>
+		</auto_static>
+		<auto_static x="0" y="0" width="22" height="30">
+			<window_name>rmw_wpn_laser</window_name>
+			<text font="graffiti19" vert_align="c">ui_rmw_wpn_laser</text>
+		</auto_static>
+		<auto_static x="0" y="0" width="22" height="30">
+			<window_name>rmw_wpn_torch</window_name>
+			<text font="graffiti19" vert_align="c">ui_rmw_wpn_torch</text>
+		</auto_static>
+	</gamepad_legend>
+	
+	<radial_menu>
+		<action_sounds>
+			<snd_open>interface\console\whl_open</snd_open>
+			<snd_close>interface\console\whl_close</snd_close>
+			<snd_switch_slot>interface\console\whl_hover</snd_switch_slot>
+			<snd_select_slot>interface\console\whl_select</snd_select_slot>
+			<snd_fire_mode>interface\console\whl_fire_mode</snd_fire_mode>
+			<snd_grenade_mode>interface\console\whl_grenade_mode</snd_grenade_mode>
+		</action_sounds>
+		
+		<general>
+			<!-- specify size without widescreen in mind, engine will do the thing -->
+			<size_back width="280" height="280"/>
+			<!-- means size per cell -->
+			<size_icon width="25" height="25"/>
+			<pivot x="140" y="390"/>
+			<!-- recomended to maintain same texture size -->
+			<texture_default>ui_weapon_wheel_d</texture_default>		
+			<texture_selected>ui_weapon_wheel_s</texture_selected>		
+			<texture_focused>ui_weapon_wheel_f</texture_focused>		
+			<texture_focused_and_selected>ui_weapon_wheel_fs</texture_focused_and_selected>		
+		</general>
+		
+		<!-- start from north -->
+		<element angle="0" slot="3"/> <!-- automatic -->
+		<element angle="51,4" slot="2"/> <!-- pistol -->
+		<element angle="102,8" slot="0" width="120" height="120"> <!-- empty -->
+			<icon>ui_rm_icon_empty</icon>
+		</element>	
+		<element angle="154,2" slot="6" width="40" height="40"/> <!-- bolt -->
+		<element angle="205,6" slot="5" width="30" height="30"/> <!-- binoculars -->
+		<element angle="257"   slot="4" width="40" height="40"/> <!-- grenade -->
+		<element angle="308,4" slot="1" width="30" height="30"/> <!-- knife -->
+	</radial_menu>
+</w>

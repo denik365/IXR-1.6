@@ -1,0 +1,21 @@
+# Default assignment
+* @Drombeys @ForserX
+
+# Sources
+sdk/ @Drombeys @ForserX
+src/ @Drombeys @ForserX
+
+# Assets
+gamedata/ @Drombeys
+rawdata @Drombeys
+
+# Configs
+*.config @Drombeys @ForserX
+*.json @Drombeys @ForserX
+*.yaml @Drombeys @ForserX
+*.yml @Drombeys @ForserX
+
+# Build system
+cmake/* @ForserX
+*.cmake @ForserX
+*.txt @ForserX

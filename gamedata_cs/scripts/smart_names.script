@@ -1,0 +1,51 @@
+local names_ini = ini_file("misc\\smart_names.ltx")
+smart_names_table = {}
+function init_smart_names_table()
+    for i=0,names_ini:line_count("levels")-1 do
+        temp1, level_name, temp2 = names_ini:r_line("levels", i, "", "")
+        if(names_ini:section_exist(level_name)) then
+            smart_names_table[level_name] = {}
+		    for i=0,names_ini:line_count(level_name)-1 do
+	            result, smart_name, value = names_ini:r_line(level_name, i, "", "")
+	            smart_names_table[level_name][smart_name] = value
+			end
+        end
+    end
+end
+
+function get_smart_terrain_name(smart)
+	local level_name = alife():level_name(gg_vertex_level_id(smart.m_game_vertex_id))
+	local smart_name = smart:name()
+	if(smart_names_table[level_name]~=nil) and (smart_names_table[level_name][smart_name]~=nil) then
+		return game.translate_string(smart_names_table[level_name][smart_name])	
+	end
+	return smart_name
+end
+
+function get_smart_terrain_name_key(smart)
+	local level_name = alife():level_name(gg_vertex_level_id(smart.m_game_vertex_id))
+	local smart_name = smart:name()
+	if(smart_names_table[level_name]~=nil) and (smart_names_table[level_name][smart_name]~=nil) then
+		return smart_names_table[level_name][smart_name]	
+	end
+	return smart_name
+end
+
+--MTB_Jabku_Jurek JUD-894
+function get_smart_terrain_name_by_id(id)
+	local number_id = tonumber(id)
+	if (number_id == nil) then return id end
+	
+	local obj = alife():object(number_id)	
+	if (obj == nil) then return id end
+	
+	--if (obj:name == nil) then return id end
+	
+	local level_name = alife():level_name(gg_vertex_level_id(obj.m_game_vertex_id))
+	local smart_name = obj:name()
+	if(smart_names_table[level_name]~=nil) and (smart_names_table[level_name][smart_name]~=nil) then
+		return smart_names_table[level_name][smart_name]	
+	end
+	return smart_name
+end
+-- MTB_Jabku_Jurek JUD-894 end

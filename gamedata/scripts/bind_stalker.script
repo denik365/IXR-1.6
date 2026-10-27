@@ -1,0 +1,809 @@
+
+local weapon_hide = {}
+local game_difficulty_by_num = {
+	[0] = "gd_novice",
+	[1] = "gd_stalker",
+	[2] = "gd_veteran",
+	[3] = "gd_master"
+}
+
+local marshalLog = false
+
+--[[
+ IXR FFx0001 все коллбеки определять здесь (автоматическая регистрация - снатие событий)
+ Отсутствие коллбека в движке не вызывает вылет
+ Отсутсвие вызываемого метода в биндере не вызывает вылет
+--]] 
+local use_callback_logs = false -- логирование подписки и отписки для коллбеков
+local all_callbacks = {
+	["inventory_info"] 			= "info_callback",
+	["on_item_take"] 			= "on_item_take",
+	["on_item_drop"] 			= "on_item_drop",
+	["trade_sell_buy_item"] 	= "on_trade",
+	["task_state"] 				= "task_callback",
+	["take_item_from_box"] 		= "take_item_from_box",
+	["use_object"] 				= "use_inventory_item",
+	["weapon_fired"]			= "on_weapon_fired", 
+	["weapon_jammed"]			= "on_weapon_jammed",
+	["weapon_zoom_in"]			= "on_weapon_zoom_in",
+	["weapon_zoom_out"]			= "on_weapon_zoom_out",
+	["weapon_magazine_empty"]	= "on_weapon_magazine_empty",
+	["weapon_no_ammo"]			= "on_weapon_no_avialable_ammo", -- eWeaponNoAmmoAvailable
+	["actor_before_death"] 		= "on_actor_before_death",
+	["death"]					= "on_death",
+	["key_press"]				= "on_key_press",
+	["key_release"]				= "on_key_release",
+	["key_hold"]				= "on_key_hold",
+	["mouse_move"]				= "on_mouse_move",
+	["mouse_wheel"]				= "on_mouse_wheel",
+	["on_foot_step"]			= "actor_on_foot_step",
+	["item_to_belt"]			= "actor_item_to_belt",
+	["item_to_slot"]			= "actor_item_to_slot",
+	["item_to_ruck"]			= "actor_item_to_ruck",
+	["on_attach_vehicle"]		= "actor_on_attach_vehicle",
+	["on_detach_vehicle"]		= "actor_on_detach_vehicle",
+	["on_use_vehicle"]			= "actor_on_use_vehicle",
+	["hit"]						= "actor_on_hit_callback",
+	["on_actor_hit_fall"]		= "actor_on_hit_fall",
+	["on_actor_jump_begin"]		= "actor_on_jump_begin",
+	["on_actor_jump_end"]		= "actor_on_jump_end",
+	
+	["hud_animation_end"]		= "actor_on_hud_animation_end",
+}
+
+-- IXR FFx0001 Упрощенная система подписки и отписки от коллбеков
+function manage_callbacks(_ref_binder, is_set)
+	ixr_callback_binder.manage_callbacks(script_name(), all_callbacks, _ref_binder, is_set, use_callback_logs)
+end
+
+function init(obj)
+	xr_motivator.AddToMotivator(obj)
+end
+
+function actor_init(npc)
+	npc:bind_object(actor_binder(npc))
+end
+
+----------------------------------------------------------------------------------------------------------------------
+class "actor_binder" (object_binder)
+----------------------------------------------------------------------------------------------------------------------
+function actor_binder:__init (obj) super(obj)
+	self.bCheckStart = false
+	self.weather_manager = level_weathers.get_weather_manager()
+	self.surge_manager = surge_manager.get_surge_manager()
+	--self.actor_detector = xr_detector.actor_detector()
+	self.last_level_name = nil
+	self.deimos_intensity = nil
+--	self.actor_weapon_on_start = true
+	self.loaded_active_slot = 3
+	self.loaded_slot_applied = false
+	self.last_detective_achievement_spawn_time 	= nil
+	self.last_mutant_hunter_achievement_spawn_time	= nil
+	self.first_update = true
+	SendScriptCallback("actor_on_init", self) -- IX-Ray
+end
+
+----------------------------------------------------------------------------------------------------------------------
+function actor_binder:net_spawn(data)
+--	printf("actor net spawn")
+	level.show_indicators()
+	self.bCheckStart = true
+	self.weapon_hide = false -- спрятано или нет оружие при разговоре.
+	self.weapon_hide_in_dialog = false
+	weapon_hide = {} -- устанавливаем глобальный дефолтовый флаг.
+	if object_binder.net_spawn(self,data) == false then
+		return false
+	end
+	db.add_actor(self.object)
+	db.actor.deimos_intensity = self.deimos_intensity
+	self.deimos_intensity = nil
+	if self.st.disable_input_time == nil then
+		level.enable_input()
+	end
+	xr_s.on_game_load()                                    --' Distemper 03.2008 --
+	self.weather_manager:reset()
+	--' Загружаем настройки дропа
+	death_manager.init_drop_settings()
+	--'Устанавливаем ссылку на таскменеджер
+	self.task_manager = task_manager.get_task_manager()
+	self.spawn_frame = device().frame
+	self.already_jumped = false
+	-- self.loaded = false
+	benchmark.main()							          --' Distemper 06.2008 --
+	
+	SendScriptCallback("on_game_load", binder)
+	
+	return true
+end
+----------------------------------------------------------------------------------------------------------------------
+function actor_binder:net_destroy()
+	SendScriptCallback("actor_on_net_destroy", self) -- IX-Ray
+	
+	xr_sound.stop_sounds_by_id(self.object:id())
+	local board_factions = sim_board.get_sim_board().players
+	if(board_factions) then
+			for k,v in pairs (board_factions) do
+					xr_sound.stop_sounds_by_id(v.id)
+			end
+	end
+	if(actor_stats.remove_from_ranking~=nil)then
+		actor_stats.remove_from_ranking(self.object:id())
+	end
+	level.show_weapon(true)
+	db.del_actor(self.object)
+
+	manage_callbacks(self, false) -- IX-Ray UNSET CALLBACKS
+
+	log("--------->"..tostring(_G.amb_vol))
+	log("--------->"..tostring(_G.mus_vol))
+	if(_G.amb_vol~=0) then
+		get_console():execute("snd_volume_eff "..tostring(_G.amb_vol))
+		_G.amb_vol = 0
+	end
+	if(_G.mus_vol~=0) then
+	    get_console():execute("snd_volume_music "..tostring(_G.mus_vol))
+		_G.mus_vol = 0
+	end
+	if sr_psy_antenna.psy_antenna then
+		sr_psy_antenna.psy_antenna:destroy()
+		sr_psy_antenna.psy_antenna = false
+	end
+	xrs_dyn_music.finish_theme()
+	xr_s.on_actor_destroy()
+	
+	object_binder.net_destroy(self)
+end
+----------------------------------------------------------------------------------------------------------------------
+
+function actor_binder:reinit()
+	object_binder.reinit(self)
+	local npc_id = self.object:id()
+	db.storage[npc_id] = { }
+	self.st = db.storage[npc_id]
+	self.st.pstor = nil
+
+	manage_callbacks(self, true) -- IX-Ray SET CALLBACKS
+	SendScriptCallback("actor_on_reinit", self) -- IX-Ray
+end
+
+-- IX-Ray 
+-- actor before death callback
+-- IMPORTANT: if you wish to kill actor you need to call db.actor:kill(level.object_by_id(whoID), true) in actor_before_death callback, to ensure all objects are properly destroyed.
+function actor_binder:on_actor_before_death(whoID)
+	local flags = { ret_value = true }
+	SendScriptCallback("actor_on_before_death", whoID, flags) -- IX-Ray
+	
+	if flags.ret_value then
+		local killer = level.object_by_id(whoID) or db.actor
+		db.actor:kill(killer, true)
+	end
+end
+-- END IX-Ray 
+----------------------------------------------------------------------------------------------------------------------
+function actor_binder:take_item_from_box(box, item)
+	if not box or not item then
+		return
+	end
+	
+	local box_name = box:name()
+	SendScriptCallback("actor_on_item_take_from_box", box, item) -- IX-Ray
+end
+
+----------------------------------------------------------------------------------------------------------------------
+function actor_binder:info_callback(npc, info_id)
+	printf("*INFO*: npc='%s' id='%s'", npc:name(), info_id)
+	--' Сюжет
+	-- Отметки на карте
+	
+	if not npc or not info_id then
+		return
+	end
+	
+	SendScriptCallback("actor_on_info_callback", npc, info_id) -- IX-Ray
+end
+----------------------------------------------------------------------------------------------------------------------
+function actor_binder:on_trade(item, sell_bye, money)
+	if sell_bye == true then
+		 game_stats.money_trade_update (money)
+	else
+		 game_stats.money_trade_update (-money)
+	end
+	
+	if not item then
+		return
+	end
+	
+	SendScriptCallback("actor_on_trade", item, sell_bye, money) -- IX-Ray
+end
+----------------------------------------------------------------------------------------------------------------------
+function actor_binder:article_callback(npc, group, name)
+	--printf("article_callback [%s][%s]", group, name)
+	if device().precache_frame >1 then 
+		return 
+	end
+	SendScriptCallback("actor_on_article", npc, group, name) -- IX-Ray
+end
+----------------------------------------------------------------------------------------------------------------------
+function actor_binder:on_item_take(obj, m_last_dropped_owner_id)
+	if obj and obj:id() then 
+		SendScriptCallback("on_item_take", obj, db.actor ~= nil)
+		
+		if db.actor then
+			local is_take_from_ground = (m_last_dropped_owner_id == alife_const.invalid_object_id or m_last_dropped_owner_id == db.actor:id())
+			local before_transfer_parent_id = nil
+			
+			if not is_take_from_ground then
+				before_transfer_parent_id = m_last_dropped_owner_id
+			end
+			
+			SendScriptCallback("actor_on_item_take", obj, before_transfer_parent_id, is_take_from_ground)
+			
+			if is_take_from_ground then
+				SendScriptCallback("actor_on_item_take_from_ground", obj)
+			end
+		end
+	end
+
+	printf("on_item_take [%s]", obj:name())
+	if isArtefact(obj) then
+		local anomal_zone = bind_anomaly_zone.parent_zones_by_artefact_id[obj:id()]
+		if anomal_zone ~= nil then
+			anomal_zone:on_artefact_take(obj)
+		else
+			bind_anomaly_zone.artefact_ways_by_id[obj:id()] = nil
+		end
+		local artefact = obj:get_artefact()
+		artefact:FollowByPath("NULL",0,vector():set(500,500,500))
+		xr_statistic.inc_founded_artefacts_counter(obj:id())
+--[[
+		local s_art = alife():object(obj:id())
+		if(s_art) then
+			xr_statistic.inc_founded_artefacts_counter(s_art:section_name())
+		else
+			xr_statistic.inc_founded_artefacts_counter()
+		end
+]]
+	end
+	treasure_manager.get_treasure_manager():on_item_take(obj:id())
+end
+----------------------------------------------------------------------------------------------------------------------
+function actor_binder:on_item_drop(obj)
+	if obj and obj:id() then 
+		SendScriptCallback("on_item_drop", obj, db.actor ~= nil)
+		
+		if db.actor then 
+			SendScriptCallback("actor_on_item_drop", obj)
+		end
+	end
+end
+
+----------------------------------------------------------------------------------------------------------------------
+function actor_binder:use_inventory_item(obj)
+	if obj and obj:id() then
+		SendScriptCallback("actor_on_item_use", obj, obj:section())
+	end
+end
+
+----------------------------------------------------------------------------------------------------------------------
+
+function actor_binder:task_callback(_task, _state)
+	if _state ~= task.fail then
+		if _state == task.completed then
+			news_manager.send_task(db.actor, "complete", _task)
+		else
+			news_manager.send_task(db.actor, "new", _task)
+		end
+	end
+	task_manager.task_callback(_task, _state)
+end
+
+----------------------------------------------------------------------------------------------------------------------
+function actor_binder:actor_on_hit_fall(g_contact_health_lost, g_contact_power)
+	SendScriptCallback("actor_on_hit_fall", self, g_contact_health_lost, g_contact_power) -- IX-Ray
+end
+----------------------------------------------------------------------------------------------------------------------
+function actor_binder:actor_on_jump_begin(actor_position)
+	SendScriptCallback("actor_on_jump_begin", self, actor_position) -- IX-Ray
+end
+----------------------------------------------------------------------------------------------------------------------
+function actor_binder:actor_on_jump_end(g_contact_power, actor_position)
+	SendScriptCallback("actor_on_jump_end", self, g_contact_power, actor_position) -- IX-Ray
+end
+----------------------------------------------------------------------------------------------------------------------
+function actor_binder:actor_on_hit_callback(hitted_game_object, damage_number, direction_vector, who_game_object, bone_id_number, e_hit_type, impulse_number, p_last_hitting_weapon_game_object, health_lost_number)
+	SendScriptCallback("actor_on_hit_callback", self, hitted_game_object, damage_number, direction_vector, who_game_object, bone_id_number, e_hit_type, impulse_number, p_last_hitting_weapon_game_object, health_lost_number) -- IX-Ray
+end
+----------------------------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------------------------
+function actor_binder:on_death(victim, who)
+	SendScriptCallback("actor_on_death", victim, who)
+end
+
+----------------------------------------------------------------------------------------------------------------------
+function actor_binder:actor_on_hud_animation_end(item, hud_section, m_current_motion_str, state_number, animation_slot_number)
+	SendScriptCallback("actor_on_hud_animation_end", item, hud_section, m_current_motion_str, state_number, animation_slot_number)
+end
+
+----------------------------------------------------------------------------------------------------------------------
+function actor_binder:actor_on_attach_vehicle(gobj)
+	SendScriptCallback("actor_on_attach_vehicle", gobj)
+end
+
+----------------------------------------------------------------------------------------------------------------------
+function actor_binder:actor_on_detach_vehicle(gobj)
+	SendScriptCallback("actor_on_detach_vehicle", gobj)
+end
+
+----------------------------------------------------------------------------------------------------------------------
+function actor_binder:actor_on_use_vehicle(gobj)
+	SendScriptCallback("actor_on_use_vehicle", gobj)
+end
+
+----------------------------------------------------------------------------------------------------------------------
+function actor_binder:actor_item_to_belt(gobj)
+	SendScriptCallback("actor_item_to_belt", gobj)
+end
+
+----------------------------------------------------------------------------------------------------------------------
+function actor_binder:actor_item_to_slot(gobj)
+	SendScriptCallback("actor_item_to_slot", gobj)
+end
+
+----------------------------------------------------------------------------------------------------------------------
+function actor_binder:actor_item_to_ruck(gobj)
+	SendScriptCallback("actor_item_to_ruck", gobj)
+end
+
+----------------------------------------------------------------------------------------------------------------------
+function actor_binder:actor_on_foot_step(gobj, power, b_play, b_on_ground, b_hud_view)
+	SendScriptCallback("actor_on_foot_step", gobj, power, b_play, b_on_ground, b_hud_view)
+	SendScriptCallback("actor_on_footstep", gobj, power, b_play, b_on_ground, b_hud_view)
+end
+
+----------------------------------------------------------------------------------------------------------------------
+function actor_binder:on_key_press(dik_key)
+	SendScriptCallback("on_key_press", dik_key)
+end
+
+----------------------------------------------------------------------------------------------------------------------
+function actor_binder:on_key_release(dik_key)
+	SendScriptCallback("on_key_release", dik_key)
+end
+
+----------------------------------------------------------------------------------------------------------------------
+function actor_binder:on_key_hold(dik_key)
+	SendScriptCallback("on_key_hold", dik_key)
+end
+
+----------------------------------------------------------------------------------------------------------------------
+function actor_binder:on_mouse_move(dx, dy)
+	SendScriptCallback("on_mouse_move", dx, dy)
+end
+
+----------------------------------------------------------------------------------------------------------------------
+function actor_binder:on_mouse_wheel(direction)
+	SendScriptCallback("on_mouse_wheel", direction)
+end
+
+----------------------------------------------------------------------------------------------------------------------
+function actor_binder:on_weapon_magazine_empty(wpn, ammo_total)
+	SendScriptCallback("actor_on_weapon_no_ammo", wpn, ammo_total)
+end
+
+----------------------------------------------------------------------------------------------------------------------
+function actor_binder:on_weapon_zoom_in(obj, wpn)
+	SendScriptCallback("actor_on_weapon_zoom_in", wpn)
+end
+
+----------------------------------------------------------------------------------------------------------------------
+function actor_binder:on_weapon_zoom_out(obj, wpn)
+	SendScriptCallback("actor_on_weapon_zoom_out", wpn)
+end
+
+----------------------------------------------------------------------------------------------------------------------
+function actor_binder:on_weapon_fired(npc, wpn, iAmmoElapsed, m_ammoType)
+	SendScriptCallback("actor_on_weapon_fired", npc, wpn, iAmmoElapsed, m_ammoType)
+end
+
+----------------------------------------------------------------------------------------------------------------------
+function actor_binder:on_weapon_jammed(npc, wpn)
+	SendScriptCallback("actor_on_weapon_jammed", wpn)
+end
+
+----------------------------------------------------------------------------------------------------------------------
+function actor_binder:on_weapon_no_avialable_ammo(wpn, suitable_ammo_total)
+	SendScriptCallback("actor_on_weapon_no_avialable_ammo", wpn, suitable_ammo_total)
+	SendScriptCallback("actor_on_weapon_reload", wpn, suitable_ammo_total)
+end
+
+----------------------------------------------------------------------------------------------------------------------
+function actor_binder:update(delta)
+	return PROF_EVENT_CLOSURE("update", function() 
+		object_binder.update(self, delta)
+
+		if string.find(command_line(), "-designer") then
+			return
+		end
+
+		if self.already_jumped==false and jump_level.need_jump==true and (device().frame > self.spawn_frame+2000) then
+			jump_level.try_to_jump()
+			self.already_jumped = true
+			return
+		end
+		-- Вызов апдейта переноса игрока проводником
+		if travel_func ~= nil then
+			travel_func()
+		end
+
+		-- DEBUG slowdown
+		--slowdown.update()
+		local time = time_global()
+		game_stats.update (delta, self.object)
+		-- апдейт погоды
+		self.weather_manager:update()
+
+		self:check_detective_achievement()
+		self:check_mutant_hunter_achievement()
+
+		--' Апдейт саундменеджера
+		xr_sound.update(self.object:id())
+
+		-- Обновление отключения ввода с клавиатуры.
+		if self.st.disable_input_time ~= nil and
+			game.get_game_time():diffSec(self.st.disable_input_time) >= self.st.disable_input_idle
+			then
+			level.enable_input()
+			self.st.disable_input_time = nil
+		end
+
+		-- Апдейт прятание оружия игрока во время диалога
+		if self.object:is_talking() then
+			if self.weapon_hide_in_dialog == false then
+				self.object:hide_weapon()
+				printf("hiding weapon!!!")
+				self.weapon_hide_in_dialog = true
+			end
+		else
+			if self.weapon_hide_in_dialog == true then
+				printf("restoring weapon!!!")
+				self.object:restore_weapon()
+				self.weapon_hide_in_dialog = false
+			end
+		end
+		-- Апдейт прятание оружия игрока в зоне sr_no_weapon
+		if check_for_weapon_hide_by_zones() == true then
+			if self.weapon_hide == false then
+				printf("hiding weapon!!!")
+				self.object:hide_weapon()
+				self.weapon_hide = true
+			end
+		else
+			if self.weapon_hide == true then
+				printf("restoring weapon!!!")
+				self.object:restore_weapon()
+				self.weapon_hide = false
+			end
+		end
+
+		-- обновление пси-антенны
+		if sr_psy_antenna.psy_antenna then
+			sr_psy_antenna.psy_antenna:update(delta)
+		end
+	--[[
+		--' Вывод сообщения о большой радиации
+		if self.object.radiation >= 0.7 then
+			local hud = get_hud()
+			local custom_static = hud:GetCustomStatic("cs_radiation_danger")
+			if custom_static == nil then
+				hud:AddCustomStatic("cs_radiation_danger", true)
+				hud:GetCustomStatic("cs_radiation_danger"):wnd():TextControl():SetTextST("st_radiation_danger")
+			end
+		else
+			local hud = get_hud()
+			local custom_static = hud:GetCustomStatic("cs_radiation_danger")
+			if custom_static ~= nil then
+				hud:RemoveCustomStatic("cs_radiation_danger")
+			end
+		end
+	]]--
+
+		if self.bCheckStart then
+			printf("SET DEFAULT INFOS")
+			if not has_alife_info("global_dialogs") then
+				self.object:give_info_portion("global_dialogs")
+			end
+			if not has_alife_info("level_changer_icons") then
+				self.object:give_info_portion("level_changer_icons")
+			end
+			self.bCheckStart = false
+
+	--		if self.actor_weapon_on_start == true then
+	--			db.actor:activate_slot(3)
+	--			self.actor_weapon_on_start = false
+	--		end
+		end
+	--	device().precache_frame  == 0 and
+		if not self.loaded_slot_applied then
+			self.object:activate_slot(self.loaded_active_slot)
+			self.loaded_slot_applied = true
+		end
+		
+		xr_s.on_actor_update(delta)
+
+		if(self.surge_manager) then
+			if(self.f_surge_manager_loaded ~= true) then
+				self.surge_manager:initialize()
+				self.f_surge_manager_loaded = true
+			end
+			if(self.surge_manager.levels_respawn[level.name()]) then
+				self.surge_manager:respawn_artefacts_and_replace_anomaly_zone()
+			end
+			self.surge_manager:update()
+		end
+		-- Апдейт доступности для симуляции.
+		simulation_objects.get_sim_obj_registry():update_avaliability(alife():actor())
+
+		-- Not used
+		--if not self.loaded then 
+		--	get_console():execute("dump_infos")
+		--	self.loaded = true
+		--end
+		treasure_manager.get_treasure_manager():update()
+		
+		if self.first_update then
+			self.first_update = false
+			SendScriptCallback("actor_on_first_update", self, delta) -- IX-Ray
+		end
+		
+		SendScriptCallback("update", delta) -- IX-Ray
+		SendScriptCallback("actor_on_update", self, delta) -- IX-Ray
+	end)
+end
+----------------------------------------------------------------------------------------------------------------------
+function actor_binder:save(packet)
+	return PROF_EVENT_CLOSURE("save", function()
+        if (utils.level_changing()) then
+            SendScriptCallback("on_level_changing")
+            SendScriptCallback("actor_on_level_changing")
+        end
+    
+        set_save_marker(packet, "save", false, "actor_binder")
+        object_binder.save(self, packet)
+        --' Сохраняем уровень сложности
+        packet:w_u8(level.get_game_difficulty())
+        --' Сохраняем данные об отключенном вводе
+        if self.st.disable_input_time == nil then
+            packet:w_bool(false)
+        else
+            packet:w_bool(true)
+            utils.w_CTime(packet, self.st.disable_input_time)
+        end
+        xr_logic.pstor_save_all(self.object, packet)
+        self.weather_manager:save(packet)
+        release_body_manager.get_release_body_manager():save(packet)
+        self.surge_manager:save(packet)
+        sr_psy_antenna.save( packet )
+        packet:w_bool(sim_board.get_sim_board().simulation_started)
+    
+        xr_sound.actor_save(packet)
+        packet:w_stringZ(tostring(self.last_level_name))
+        xr_statistic.save(packet)
+        treasure_manager.get_treasure_manager():save(packet)
+    
+        local n = 0
+        for k,v in pairs(db.script_ids) do
+            n = n + 1
+        end
+        packet:w_u8(n)
+        for k,v in pairs (db.script_ids) do
+            packet:w_object_id(k)
+            packet:w_stringZ(v)
+        end
+        task_manager.get_task_manager():save(packet)
+    
+    --	packet:w_bool(self.actor_weapon_on_start)
+        
+        packet:w_u8(self.object:active_slot())
+    
+    
+        local deimos_exist = false
+        for k,v in pairs(db.zone_by_name) do
+            if(db.storage[v:id()] and db.storage[v:id()].active_scheme=="sr_deimos") then
+                deimos_exist = true
+                packet:w_bool(true)
+                packet:w_float(db.storage[v:id()].sr_deimos.intensity)
+            end
+        end
+        if not deimos_exist then
+            packet:w_bool(false)
+        end
+    
+        if self.last_detective_achievement_spawn_time == nil then
+            packet:w_bool(false)
+        else
+            packet:w_bool(true)
+            utils.w_CTime(packet, self.last_detective_achievement_spawn_time)
+        end
+        if self.last_mutant_hunter_achievement_spawn_time == nil then
+            packet:w_bool(false)
+        else
+            packet:w_bool(true)
+            utils.w_CTime(packet, self.last_mutant_hunter_achievement_spawn_time)
+        end
+        set_save_marker(packet, "save", true, "actor_binder")
+        
+        SendScriptCallback("save", packet) -- IX-Ray
+        SendScriptCallback("actor_on_save", packet) -- IX-Ray
+    end)
+end
+
+
+----------------------------------------------------------------------------------------------------------------------
+
+function actor_binder:load(reader)
+	return PROF_EVENT_CLOSURE("load", function()
+        set_save_marker(reader, "load", false, "actor_binder")
+        object_binder.load(self, reader)
+        --' Загружаем уровень сложности
+        local game_difficulty = reader:r_u8()
+        printf("load game_difficulty %s", tostring(game_difficulty))
+        get_console():execute("g_game_difficulty "..game_difficulty_by_num[game_difficulty])
+        local stored_input_time = reader:r_u8()
+        if stored_input_time == true then
+            self.st.disable_input_time = utils.r_CTime(reader)
+        end
+        xr_logic.pstor_load_all(self.object, reader)
+        self.weather_manager:load(reader)
+        release_body_manager.get_release_body_manager():load(reader)
+    --	self.surge_manager:initialize()
+        self.surge_manager:load(reader)
+        self.f_surge_manager_loaded = true
+        sr_psy_antenna.load(reader)
+        sim_board.get_sim_board().simulation_started = reader:r_bool()
+    
+        xr_sound.actor_load(reader)
+        local n = reader:r_stringZ()
+        if(n~="nil") then
+            self.last_level_name = n
+        end
+        xr_statistic.load(reader)
+        treasure_manager.get_treasure_manager():load(reader)
+        n = reader:r_u8()
+        for i = 1,n do
+            db.script_ids[reader:r_object_id()] = reader:r_stringZ()
+        end
+    
+        task_manager.get_task_manager():load(reader)
+    
+    --	self.actor_weapon_on_start = reader:r_bool()
+        
+        self.loaded_active_slot = reader:r_u8()
+        
+        self.loaded_slot_applied = false
+    
+        local b = reader:r_bool()
+        if(b) then
+            self.deimos_intensity = reader:r_float()
+        end
+    
+        local stored_achievement_time = reader:r_bool()
+        if stored_achievement_time == true then
+            self.last_detective_achievement_spawn_time = utils.r_CTime(reader)
+        end
+        stored_achievement_time = reader:r_bool()
+        if stored_achievement_time == true then
+            self.last_mutant_hunter_achievement_spawn_time = utils.r_CTime(reader)
+        end
+        set_save_marker(reader, "load", true, "actor_binder")
+    
+        SendScriptCallback("load", reader) -- IX-Ray
+        SendScriptCallback("actor_on_load", reader) -- IX-Ray
+    end)
+end
+
+--*************************************************************
+--*					Подспаун вещей в ящики					  *
+--*************************************************************
+local detective_achievement_items 		= {	"medkit",
+											"antirad",
+											"bandage"}
+
+local mutant_hunter_achievement_items	= {	"ammo_5.45x39_ap",
+											"ammo_5.56x45_ap",
+											"ammo_9x39_ap",
+											"ammo_5.56x45_ap",
+											"ammo_12x76_zhekan"}
+
+local function spawn_achivement_items(items_table, count, inv_box_story_id)
+	return PROF_EVENT_CLOSURE("spawn_achivement_items", function()
+        local inv_box = alife():object(get_story_object_id(inv_box_story_id))
+        for i = 1,count do
+            alife():create(items_table[math.random(#items_table)],
+                            inv_box.position,
+                            inv_box.m_level_vertex_id,
+                            inv_box.m_game_vertex_id,
+                            inv_box.id)
+        end
+    end)
+end
+
+function actor_binder:check_detective_achievement()
+	return PROF_EVENT_CLOSURE("check_detective_achievement", function()
+        if not has_alife_info("detective_achievement_gained") then
+            return
+        end
+        if self.last_detective_achievement_spawn_time == nil then
+            self.last_detective_achievement_spawn_time = game.get_game_time()
+        end
+        if game.get_game_time():diffSec(self.last_detective_achievement_spawn_time) > 43200 then
+            spawn_achivement_items(detective_achievement_items, 4, "zat_a2_actor_treasure")
+            xr_effects.send_tip(db.actor, nil, {"st_detective_news","got_medicine"})
+            self.last_detective_achievement_spawn_time = game.get_game_time()
+        end
+    end)
+end
+
+function actor_binder:check_mutant_hunter_achievement()
+	return PROF_EVENT_CLOSURE("check_mutant_hunter_achievement", function()
+        if not has_alife_info("mutant_hunter_achievement_gained") then
+            return
+        end
+        if self.last_mutant_hunter_achievement_spawn_time == nil then
+            self.last_mutant_hunter_achievement_spawn_time = game.get_game_time()
+        end
+        if game.get_game_time():diffSec(self.last_mutant_hunter_achievement_spawn_time) > 43200 then
+            spawn_achivement_items(mutant_hunter_achievement_items, 5, "jup_b202_actor_treasure")
+            xr_effects.send_tip(db.actor, nil, {"st_mutant_hunter_news","got_ammo"})
+            self.last_mutant_hunter_achievement_spawn_time = game.get_game_time()
+        end
+    end)
+end
+
+----------------------------------------------------------------------------------------------------------------------
+
+function check_for_weapon_hide_by_zones()
+	return PROF_EVENT_CLOSURE("check_for_weapon_hide_by_zones", function()
+        for k,v in pairs(weapon_hide) do
+            if v == true then
+                return true
+            end
+        end
+        return false
+    end)
+end
+
+-- Weapon functions
+function hide_weapon(zone_id)
+	return PROF_EVENT_CLOSURE("hide_weapon", function()
+        local active_section = nil
+        if db.storage[zone_id] then
+            active_section = db.storage[zone_id].active_section
+        end
+        printf("[WEAPON_CONTROL]:hiding weapon from zone [%s] in section [%s]!!!", tostring(zone_id), tostring(active_section))
+        
+        weapon_hide[zone_id] = true
+    end)
+end
+
+function restore_weapon(zone_id)
+	return PROF_EVENT_CLOSURE("restore_weapon", function()
+        local active_section = nil
+        if db.storage[zone_id] then
+            active_section = db.storage[zone_id].active_section
+        end
+        printf("[WEAPON_CONTROL]:restoring weapon from zone [%s] in section [%s]!!!", tostring(zone_id), tostring(active_section))
+        
+        weapon_hide[zone_id] = false
+    end)
+end
+
+
+
+
+
+
+
+
+
+
